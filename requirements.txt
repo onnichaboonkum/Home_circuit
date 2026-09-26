@@ -1,0 +1,6 @@
+# Python 3.10+
+numpy>=1.26
+scipy>=1.11
+pillow>=10.0      # needs libraqm for Thai shaping (bundled in the manylinux wheels)
+pycairo>=1.25
+fonttools>=4.40   # only for scripts/make_fonts.py

@@ -1,0 +1,432 @@
+{
+  "fps": 30,
+  "size": [
+    1920,
+    1080
+  ],
+  "total_seconds": 120.0,
+  "scenes": [
+    {
+      "name": "01_HOOK",
+      "start": 0.0,
+      "duration": 7.499999999999999,
+      "shots": [
+        {
+          "name": "black",
+          "start": 0.0,
+          "duration": 0.5
+        },
+        {
+          "name": "hook_solder",
+          "start": 0.5,
+          "duration": 0.8
+        },
+        {
+          "name": "hook_components",
+          "start": 1.3,
+          "duration": 0.7
+        },
+        {
+          "name": "hook_code",
+          "start": 2.0,
+          "duration": 0.8
+        },
+        {
+          "name": "hook_scope",
+          "start": 2.8,
+          "duration": 0.75
+        },
+        {
+          "name": "hook_hands",
+          "start": 3.55,
+          "duration": 0.85
+        },
+        {
+          "name": "hook_drone",
+          "start": 4.3999999999999995,
+          "duration": 0.75
+        },
+        {
+          "name": "title_card",
+          "start": 5.1499999999999995,
+          "duration": 2.3499999999999996
+        }
+      ]
+    },
+    {
+      "name": "02_BEGINNING",
+      "start": 7.5,
+      "duration": 17.0,
+      "shots": [
+        {
+          "name": "home_exterior",
+          "start": 7.5,
+          "duration": 3.5
+        },
+        {
+          "name": "workshop_wide",
+          "start": 11.0,
+          "duration": 4.0
+        },
+        {
+          "name": "workshop_table",
+          "start": 15.0,
+          "duration": 2.5
+        },
+        {
+          "name": "workshop_scope",
+          "start": 17.5,
+          "duration": 2.5
+        },
+        {
+          "name": "workshop_enclosure",
+          "start": 20.0,
+          "duration": 2.0
+        },
+        {
+          "name": "workshop_enclosure",
+          "start": 22.0,
+          "duration": 2.5
+        }
+      ]
+    },
+    {
+      "name": "03_IDEA_TO_HARDWARE",
+      "start": 24.5,
+      "duration": 17.5,
+      "shots": [
+        {
+          "name": "idea_sketch",
+          "start": 24.5,
+          "duration": 3.0
+        },
+        {
+          "name": "schematic",
+          "start": 27.5,
+          "duration": 1.5
+        },
+        {
+          "name": "pcb_layout",
+          "start": 29.0,
+          "duration": 1.5
+        },
+        {
+          "name": "physical_pcb",
+          "start": 30.5,
+          "duration": 1.5
+        },
+        {
+          "name": "soldering",
+          "start": 32.0,
+          "duration": 1.5
+        },
+        {
+          "name": "firmware",
+          "start": 33.5,
+          "duration": 2.8000000000000007
+        },
+        {
+          "name": "testing",
+          "start": 36.3,
+          "duration": 2.799999999999999
+        },
+        {
+          "name": "working_prototype",
+          "start": 39.1,
+          "duration": 2.9000000000000004
+        }
+      ]
+    },
+    {
+      "name": "04_PROJECTS",
+      "start": 42.0,
+      "duration": 19.000000000000004,
+      "shots": [
+        {
+          "name": "freelance_chat",
+          "start": 42.0,
+          "duration": 2.6
+        },
+        {
+          "name": "project_network",
+          "start": 44.6,
+          "duration": 2.2
+        },
+        {
+          "name": "iot",
+          "start": 46.8,
+          "duration": 2.0
+        },
+        {
+          "name": "gateway_cabinet",
+          "start": 48.8,
+          "duration": 1.8
+        },
+        {
+          "name": "drone_uav",
+          "start": 50.6,
+          "duration": 1.8
+        },
+        {
+          "name": "public_sector_generic",
+          "start": 52.400000000000006,
+          "duration": 1.8
+        },
+        {
+          "name": "university",
+          "start": 54.2,
+          "duration": 2.0
+        },
+        {
+          "name": "smart_farm",
+          "start": 56.2,
+          "duration": 2.2
+        },
+        {
+          "name": "embedded",
+          "start": 58.400000000000006,
+          "duration": 2.6
+        }
+      ]
+    },
+    {
+      "name": "05_PHILOSOPHY",
+      "start": 61.0,
+      "duration": 19.0,
+      "shots": [
+        {
+          "name": "gateway_hero",
+          "start": 61.0,
+          "duration": 4.0
+        },
+        {
+          "name": "gateway_pcb_callouts",
+          "start": 65.0,
+          "duration": 3.0
+        },
+        {
+          "name": "developer_connect",
+          "start": 68.0,
+          "duration": 3.0
+        },
+        {
+          "name": "developer_code",
+          "start": 71.0,
+          "duration": 2.8
+        },
+        {
+          "name": "build_modify_develop",
+          "start": 73.8,
+          "duration": 3.2
+        },
+        {
+          "name": "made_for_developers",
+          "start": 77.0,
+          "duration": 3.0
+        }
+      ]
+    },
+    {
+      "name": "06_CAPABILITIES",
+      "start": 80.0,
+      "duration": 18.0,
+      "shots": [
+        {
+          "name": "headline",
+          "start": 80.0,
+          "duration": 3.0
+        },
+        {
+          "name": "iot_solutions",
+          "start": 83.0,
+          "duration": 2.0
+        },
+        {
+          "name": "gateway",
+          "start": 85.0,
+          "duration": 2.0
+        },
+        {
+          "name": "smart_farm",
+          "start": 87.0,
+          "duration": 2.0
+        },
+        {
+          "name": "drone_uav",
+          "start": 89.0,
+          "duration": 2.0
+        },
+        {
+          "name": "hardware_development",
+          "start": 91.0,
+          "duration": 2.0
+        },
+        {
+          "name": "firmware_development",
+          "start": 93.0,
+          "duration": 2.0
+        },
+        {
+          "name": "coding_training",
+          "start": 95.0,
+          "duration": 3.0
+        }
+      ]
+    },
+    {
+      "name": "07_BRAND_MESSAGE",
+      "start": 98.0,
+      "duration": 15.000000000000002,
+      "shots": [
+        {
+          "name": "schematic",
+          "start": 98.0,
+          "duration": 1.1
+        },
+        {
+          "name": "pcb",
+          "start": 99.1,
+          "duration": 1.1
+        },
+        {
+          "name": "soldering",
+          "start": 100.2,
+          "duration": 1.1
+        },
+        {
+          "name": "programming",
+          "start": 101.3,
+          "duration": 1.2
+        },
+        {
+          "name": "engineer_thinking",
+          "start": 102.5,
+          "duration": 4.9
+        },
+        {
+          "name": "hardware_testing",
+          "start": 107.4,
+          "duration": 0.9
+        },
+        {
+          "name": "gateway_operating",
+          "start": 108.3,
+          "duration": 0.9
+        },
+        {
+          "name": "drone_takeoff",
+          "start": 109.2,
+          "duration": 0.9
+        },
+        {
+          "name": "smart_farm_sensor",
+          "start": 110.1,
+          "duration": 0.9
+        },
+        {
+          "name": "students_coding",
+          "start": 111.0,
+          "duration": 2.0
+        }
+      ]
+    },
+    {
+      "name": "08_ENDING",
+      "start": 113.0,
+      "duration": 7.0,
+      "shots": [
+        {
+          "name": "logo_and_cta",
+          "start": 113.0,
+          "duration": 7.0
+        }
+      ]
+    }
+  ],
+  "voiceover": [
+    {
+      "id": "vo01",
+      "start": 0.65,
+      "duration": 3.6676458333333333,
+      "text": "เทคโนโลยีหลายชิ้นของเรา ไม่ได้เริ่มต้นจากโรงงานใหญ่"
+    },
+    {
+      "id": "vo02",
+      "start": 4.75,
+      "duration": 2.2836041666666667,
+      "text": "แต่มันเริ่มจากบ้านหลังหนึ่ง"
+    },
+    {
+      "id": "vo03",
+      "start": 8.1,
+      "duration": 6.523520833333333,
+      "text": "Home Circuit เริ่มต้นจากกลุ่มวิศวกรไฟฟ้าและเมคคาทรอนิกส์ ที่มีประสบการณ์จากการทำงานในบริษัท"
+    },
+    {
+      "id": "vo04",
+      "start": 14.799999999999999,
+      "duration": 2.50825,
+      "text": "และมีความคิดง่าย ๆ เหมือนกันว่า"
+    },
+    {
+      "id": "vo05",
+      "start": 17.599999999999998,
+      "duration": 4.1280833333333335,
+      "text": "ถ้าอุปกรณ์ที่เราต้องการยังไม่มี ทำไมเราไม่สร้างมันขึ้นมาเอง?"
+    },
+    {
+      "id": "vo06",
+      "start": 25.0,
+      "duration": 8.753708333333334,
+      "text": "จากการทดลองทำอุปกรณ์เพื่อใช้งานกันเอง ค่อย ๆ กลายเป็นงานพัฒนา Hardware และ Firmware ที่เริ่มต้นจากปัญหาในการใช้งานจริง"
+    },
+    {
+      "id": "vo07",
+      "start": 42.3,
+      "duration": 3.8259583333333333,
+      "text": "จากงาน Freelance เล็ก ๆ โปรเจกต์เริ่มเดินทางไปไกลขึ้น"
+    },
+    {
+      "id": "vo08",
+      "start": 46.7,
+      "duration": 9.184708333333333,
+      "text": "ตั้งแต่งาน IoT และระบบควบคุม งานพัฒนาโดรน เทคโนโลยีสำหรับหน่วยงานภาครัฐ ไปจนถึงโปรเจกต์ของนักศึกษามหาวิทยาลัย"
+    },
+    {
+      "id": "vo09",
+      "start": 61.4,
+      "duration": 4.362833333333334,
+      "text": "แต่สิ่งที่ Home Circuit อยากสร้าง ไม่ใช่แค่อุปกรณ์หนึ่งชิ้นที่ใช้งานได้"
+    },
+    {
+      "id": "vo10",
+      "start": 66.0,
+      "duration": 7.846520833333333,
+      "text": "เราอยากสร้าง Hardware ที่นักพัฒนาสามารถนำไปต่อยอด ประยุกต์ใช้ และเขียนโปรแกรมเพิ่มเติมให้เหมาะกับงานของตัวเองได้"
+    },
+    {
+      "id": "vo11",
+      "start": 98.3,
+      "duration": 4.153708333333333,
+      "text": "เพราะสำหรับ Home Circuit เทคโนโลยีไม่ได้เริ่มจากคำว่า “ขายอะไร”"
+    },
+    {
+      "id": "vo12",
+      "start": 102.95,
+      "duration": 1.3572291666666667,
+      "text": "แต่มันเริ่มจาก…"
+    },
+    {
+      "id": "vo13",
+      "start": 104.9,
+      "duration": 2.099645833333333,
+      "text": "“เราจะแก้ปัญหานี้ได้อย่างไร”"
+    },
+    {
+      "id": "vo14",
+      "start": 107.6,
+      "duration": 3.972375,
+      "text": "และเปลี่ยนคำตอบนั้น ให้กลายเป็น Hardware ที่ใช้งานได้จริง"
+    }
+  ]
+}
