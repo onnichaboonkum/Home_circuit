@@ -1,8 +1,8 @@
 # Home Circuit — Company Story (DRAFT / Pre-visualization)
 
 A cinematic **pre-visualization** of the Home Circuit company introduction
-video, rendered entirely from code. Every picture, product, logo and sound in this draft is **conceptual placeholders** made for
-client review. They are built so that real footage, product renders, the real logo and licensed music can replace them later without
+video, rendered entirely from code. Every picture, product and sound in this draft (except the official logo) is a **conceptual placeholder** made for
+client review. They are built so that real footage, product renders, and licensed music can replace them later without
 rewriting the edit.
 
 **Output:** `output/home_circuit_company_story_draft.mp4`
