@@ -10,14 +10,15 @@ from ..engine import product
 from ..engine.camera import Plate, Sprite
 from ..engine.canvas import glow, glow_spot, linear_fill, set_col, surface, to_pil
 from ..engine.pcb import TraceAnim, node, rj45
-from ..engine.scene import VO, SFX, FuncShot, PlateShot, Scene, Overlay
+from ..engine.captions import Caption
+from ..engine.scene import SFX, FuncShot, PlateShot, Scene, Overlay
 from ..engine.text import Line, draw_lines
 from ..engine.util import clamp, ease_in_out, ease_out, progress
 from ..plates import CODE_RECT_FW, CX, DEV_GW, DEV_LAPTOP, PH, TERM_RECT_FW
 from .common import Cam, badge, code_layer, glow_dot_layer, hud_corners, plate_layer, product_frame, title
 
 # ---- shot table - edit here
-SHOTS = [("hero", 4.0), ("pcb", 3.0), ("connect", 3.0), ("code", 2.8), ("words", 3.2), ("tagline", 3.0)]
+SHOTS = [("hero", 4.0), ("pcb", 3.4), ("connect", 3.0), ("code", 3.2), ("words", 3.2), ("tagline", 3.4)]
 T = {}
 _acc = 0.0
 for _n, _d in SHOTS:
@@ -150,11 +151,11 @@ def words(t, dur):
 
 
 def tagline(t, dur):
-    frame, (x, y, sc) = product_frame(product.load("gateway_3q"), t, dur, scale0=0.44, scale1=0.48, cy=330, sweep=True)
+    frame, (x, y, sc) = product_frame(product.load("gateway_3q"), t, dur, scale0=0.42, scale1=0.46, cy=270, sweep=True)
     frame = _led_sprites(frame, x, y, sc, t)
     draw_lines(frame, [Line("HARDWARE", "display_black", 116, C.WHITE, -5),
                        Line("MADE FOR DEVELOPERS.", "display_bold", 66, C.GREEN, 20)],
-               t, 0.2, dur + 1, anim="mask", center=(C.W / 2, 740), dur_in=0.7, dur_out=0)
+               t, 0.2, dur + 1, anim="mask", center=(C.W / 2, 640), dur_in=0.7, dur_out=0)
     return frame
 
 
@@ -170,15 +171,18 @@ def build():
     ]
     ov = [badge(0.0, T["words"]), badge(T["tagline"], DURATION),
           hud_corners(T["hero"] + 0.2, T["pcb"] - 0.05, "HC GW-01  ·  EDGE GATEWAY", "CONCEPT  REV 0.9")]
-    vo = [
-        VO("vo09", 0.4, "แต่สิ่งที่ Home Circuit อยากสร้าง ไม่ใช่แค่อุปกรณ์หนึ่งชิ้นที่ใช้งานได้",
-           [["แต่สิ่งที่ Home Circuit อยากสร้าง", "ไม่ใช่แค่อุปกรณ์หนึ่งชิ้นที่ใช้งานได้"]],
-           "แต่สิ่งที่โฮมเซอร์กิตอยากสร้าง ไม่ใช่แค่อุปกรณ์หนึ่งชิ้นที่ใช้งานได้", max_dur=4.4),
-        VO("vo10", 5.0, "เราอยากสร้าง Hardware ที่นักพัฒนาสามารถนำไปต่อยอด ประยุกต์ใช้ และเขียนโปรแกรมเพิ่มเติมให้เหมาะกับงานของตัวเองได้",
-           [["เราอยากสร้าง Hardware", "ที่นักพัฒนาสามารถนำไปต่อยอด ประยุกต์ใช้"],
-            ["และเขียนโปรแกรมเพิ่มเติม", "ให้เหมาะกับงานของตัวเองได้"]],
-           "เราอยากสร้างฮาร์ดแวร์ ที่นักพัฒนาสามารถนำไปต่อยอด ประยุกต์ใช้ และเขียนโปรแกรมเพิ่มเติมให้เหมาะกับงานของตัวเองได้",
-           max_dur=7.6),
+    d_ = dict(SHOTS)
+
+    def cap(name, lines, **kw):
+        return Caption(T[name] + 0.3, d_[name] - 0.45, lines, **kw)
+
+    caps = [
+        cap("hero", ["สิ่งที่ Home Circuit อยากสร้าง", "ไม่ใช่แค่อุปกรณ์ที่ใช้งานได้"]),
+        cap("pcb", ["แต่เป็น Hardware ที่ต่อยอดได้"]),
+        cap("connect", ["เชื่อมต่อและปรับแต่งได้ทันที"]),
+        cap("code", ["เขียนโปรแกรมเพิ่มได้ ตามงานของคุณ"]),
+        cap("words", ["สร้าง  •  ปรับแต่ง  •  พัฒนาต่อ"]),
+        cap("tagline", ["Hardware ที่ออกแบบมาเพื่อนักพัฒนา"]),
     ]
     sfx = [SFX(0.0, "whoosh_soft", -20), SFX(0.4, "shimmer", -22), SFX(T["pcb"], "tick", -18),
            SFX(T["connect"] + 1.0, "plug", -12), SFX(T["connect"] + 1.15, "beep", -22),
@@ -186,5 +190,5 @@ def build():
     for w, t0 in WORDS:
         sfx.append(SFX(T["words"] + t0, "tick_hi", -14))
     sfx.append(SFX(T["tagline"], "low_impact", -12))
-    return Scene("05_PHILOSOPHY", shots, ov, vo, sfx, grade="tech",
+    return Scene("05_PHILOSOPHY", shots, ov, [], sfx, grade="tech", captions=caps,
                  music_marks=[(T["words"], "drop_light"), (T["tagline"], "hit")])

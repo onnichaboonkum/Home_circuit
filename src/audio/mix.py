@@ -70,8 +70,8 @@ def mix(scenes, total, vo_items, music_path):
         g = db(TARGET_LUFS - lufs)
         out = soft_limit(out * g, 0.97)
         pk = np.abs(out).max()
-        if pk > db(-1.0):
-            out *= db(-1.0) / pk
+        if pk > db(-3.0):
+            out *= db(-3.0) / pk
         write_wav(path, out)
     return path
 

@@ -7,7 +7,8 @@ from ..engine import props as P
 from ..engine.camera import Plate
 from ..engine.canvas import glow_spot, surface, to_pil
 from ..engine.pcb import TraceAnim, random_traces, route
-from ..engine.scene import VO, SFX, FuncShot, PlateShot, Scene
+from ..engine.captions import Caption
+from ..engine.scene import SFX, FuncShot, PlateShot, Scene
 from ..engine.text import Line, draw_lines
 from ..engine.util import progress, rng
 from ..plates import CLASS_SCREEN, CX, CY
@@ -21,6 +22,8 @@ ITEM = 2.0            # one bar at 120 BPM
 LAST_ITEM = 3.0
 ITEMS = ["IoT SOLUTIONS", "GATEWAY", "SMART FARM", "DRONE / UAV", "HARDWARE DEVELOPMENT",
          "FIRMWARE DEVELOPMENT", "CODING TRAINING"]
+ITEMS_TH = ["ระบบ IoT ครบวงจร", "อุปกรณ์ Gateway เชื่อมต่อระบบ", "ระบบฟาร์มอัจฉริยะ", "งานพัฒนาโดรน",
+            "ออกแบบและพัฒนา Hardware", "พัฒนา Firmware", "อบรมการเขียนโปรแกรม"]
 STARTS = [HEADLINE + i * ITEM for i in range(len(ITEMS))]
 DURATION = STARTS[-1] + LAST_ITEM
 
@@ -110,5 +113,9 @@ def build():
     for t0 in STARTS:
         sfx += [SFX(t0 - 0.14, "whoosh", -20), SFX(t0, "tick_hi", -15)]
     sfx += [SFX(STARTS[3] + 0.1, "drone", -18), SFX(STARTS[4] + 0.2, "solder_sizzle", -24), SFX(STARTS[5], "keyboard", -22)]
-    return Scene("06_CAPABILITIES", shots, ov, [], sfx, grade="tech",
+    caps = [Caption(0.6, HEADLINE - 0.65, ["Home Circuit สร้างอะไรได้บ้าง?"], style="under", y=780)]
+    for i, t0 in enumerate(STARTS):
+        t1 = STARTS[i + 1] if i + 1 < len(STARTS) else DURATION
+        caps.append(Caption(t0 + 0.15, t1 - t0 - 0.2, [ITEMS_TH[i]], style="top", y=262))
+    return Scene("06_CAPABILITIES", shots, ov, [], sfx, grade="tech", captions=caps,
                  music_marks=[(0.0, "peak_start")] + [(t0, "accent") for t0 in STARTS])

@@ -7,17 +7,18 @@ from .. import config as C
 from ..engine import logo
 from ..engine.camera import Plate
 from ..engine.canvas import glow, glow_spot, solid, surface, to_pil
+from ..engine.captions import Caption
 from ..engine.scene import SFX, FuncShot, Scene
 from ..engine.text import Line, draw_lines, text_image
 from ..engine.util import clamp, ease_in_out, ease_out, progress
 from .common import Cam
 
-DURATION = 7.0
+DURATION = 7.6
 T_LOGO = (0.25, 1.75)      # mark draw-on
 T_WORD = 1.25
 T_TAGS = 2.2
 T_CTA = 3.7                 # logo moves up, CTA appears
-T_OFF = 6.3                 # power-down
+T_OFF = 6.9                 # power-down
 
 TAGS = "HARDWARE  •  IoT  •  GATEWAY  •  ROBOTICS"
 
@@ -84,5 +85,6 @@ def build():
     sfx = [SFX(0.25, "shimmer", -18), SFX(T_WORD, "tick_hi", -18), SFX(T_TAGS, "beep", -26),
            SFX(T_CTA + 0.35, "whoosh_soft", -20), SFX(T_CTA + 0.7, "low_impact", -14),
            SFX(T_OFF, "power_down", -10), SFX(T_OFF + 0.5, "relay_click", -8)]
-    return Scene("08_ENDING", shots, [], [], sfx, grade="neutral", grain=3.0,
+    caps = [Caption(T_CTA + 0.8, T_OFF - T_CTA - 0.8, ["มีไอเดีย? มาสร้างมันด้วยกัน"], style="under", y=850)]
+    return Scene("08_ENDING", shots, [], [], sfx, grade="neutral", grain=3.0, captions=caps,
                  music_marks=[(0.0, "resolve"), (T_OFF, "end")])

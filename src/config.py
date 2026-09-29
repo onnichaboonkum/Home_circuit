@@ -68,6 +68,11 @@ FONT_FILES = {
 }
 SUBTITLE_FONT_NAME = "HC Thai Sans Medium"
 
+# ---------------------------------------------------------------- story mode
+# False = no narration: the story is told with on-screen Thai text + music.
+# True  = re-enable the (scratch) Thai voice-over pipeline in src/audio/voiceover.py
+USE_VOICEOVER = False
+
 # ---------------------------------------------------------------- finishing
 GRAIN_AMOUNT = 5.0        # 0 disables film grain
 VIGNETTE_AMOUNT = 0.32

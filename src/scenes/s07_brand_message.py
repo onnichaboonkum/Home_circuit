@@ -5,7 +5,8 @@ import math
 from .. import config as C
 from ..engine import props as P
 from ..engine.pcb import draw_schematic
-from ..engine.scene import VO, SFX, PlateShot, Scene
+from ..engine.captions import Caption
+from ..engine.scene import SFX, PlateShot, Scene
 from ..engine.text import Line
 from ..engine.util import ease_in_out, progress
 from ..plates import BOARD_RECT, CX, GW_CAB_RECT
@@ -16,8 +17,8 @@ from .s04_projects import farm_dyn, gateway_dyn
 from .s06_capabilities import class_dyn
 
 # ---- shot table - edit here (the long 'thinker' shot carries the pause)
-SHOTS = [("schematic", 1.1), ("pcb", 1.1), ("soldering", 1.1), ("programming", 1.2), ("thinker", 4.9),
-         ("testing", 0.9), ("gateway", 0.9), ("drone", 0.9), ("farm", 0.9), ("students", 2.0)]
+SHOTS = [("schematic", 1.2), ("pcb", 1.2), ("soldering", 1.2), ("programming", 1.3), ("thinker", 5.0),
+         ("testing", 0.9), ("gateway", 0.9), ("drone", 0.9), ("farm", 0.9), ("students", 2.4)]
 T = {}
 _acc = 0.0
 for _n, _d in SHOTS:
@@ -65,21 +66,17 @@ def build():
         title([Line("REAL SOLUTIONS.", "display_black", 104, C.GREEN, -5)], t3, DURATION, anim="mask", center=(C.W / 2, 470), dur_in=0.5, dur_out=0.0),
         badge(T["gateway"], T["students"]),
     ]
-    vo = [
-        VO("vo11", 0.3, "เพราะสำหรับ Home Circuit เทคโนโลยีไม่ได้เริ่มจากคำว่า “ขายอะไร”",
-           [["เพราะสำหรับ Home Circuit", "เทคโนโลยีไม่ได้เริ่มจากคำว่า “ขายอะไร”"]],
-           "เพราะสำหรับโฮมเซอร์กิต เทคโนโลยีไม่ได้เริ่มจากคำว่า ขายอะไร", max_dur=4.2),
-        VO("vo12", T["thinker"] + 0.45, "แต่มันเริ่มจาก…", [["แต่มันเริ่มจาก…"]], "แต่มันเริ่มจาก", max_dur=1.4),
-        VO("vo13", T["thinker"] + 2.4, "“เราจะแก้ปัญหานี้ได้อย่างไร”", [["“เราจะแก้ปัญหานี้ได้อย่างไร”"]],
-           "เราจะแก้ปัญหานี้ได้อย่างไร", max_dur=2.2),
-        VO("vo14", T_BACK + 0.2, "และเปลี่ยนคำตอบนั้น ให้กลายเป็น Hardware ที่ใช้งานได้จริง",
-           [["และเปลี่ยนคำตอบนั้น", "ให้กลายเป็น Hardware ที่ใช้งานได้จริง"]],
-           "และเปลี่ยนคำตอบนั้น ให้กลายเป็นฮาร์ดแวร์ที่ใช้งานได้จริง", max_dur=4.0),
+    th = T["thinker"]
+    caps = [
+        Caption(0.3, th - 0.4, ["สำหรับ Home Circuit", "เทคโนโลยีไม่ได้เริ่มจากคำว่า “ขายอะไร”"]),
+        Caption(th + 0.3, 1.8, ["แต่มันเริ่มจาก…"], style="hero", y=880),
+        Caption(th + 2.2, T_BACK - th - 2.25, ["“เราจะแก้ปัญหานี้ได้อย่างไร?”"], style="hero", y=880, color=C.GREEN),
+        Caption(T_BACK + 0.3, DURATION - T_BACK - 0.3, ["แล้วเปลี่ยนคำตอบนั้น", "ให้กลายเป็น Hardware ที่ใช้งานได้จริง"]),
     ]
     sfx = [SFX(T["soldering"], "solder_sizzle", -22), SFX(T["programming"], "keyboard", -20),
            SFX(T_DIP, "room_tone", -24), SFX(T_BACK, "low_impact", -8), SFX(T_BACK, "relay_click", -14),
            SFX(T["gateway"], "beep", -22), SFX(T["drone"], "drone", -16), SFX(T["farm"], "tick", -20),
            SFX(t2, "tick_hi", -16), SFX(t3, "tick_hi", -14)]
-    return Scene("07_BRAND_MESSAGE", shots, ov, vo, sfx, grade="neutral",
+    return Scene("07_BRAND_MESSAGE", shots, ov, [], sfx, grade="neutral", captions=caps,
                  music_marks=[(T_DIP, "dip"), (T_BACK - 0.8, "riser_short"), (T_BACK, "hit")],
                  flashes=[(T_BACK, 0.2, C.WHITE, 0.25)])

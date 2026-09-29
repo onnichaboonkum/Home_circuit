@@ -11,6 +11,7 @@ from PIL import Image
 
 from .. import config as C
 from .camera import Cam, Plate, cam_at, handheld
+from .captions import Caption, draw_caption
 from .util import ease_in_out, progress
 
 
@@ -127,6 +128,7 @@ class Scene:
     # music intent markers (scene-local): list of (t, kind) e.g. (15.0, "hit"), (4.5, "dip")
     music_marks: list = field(default_factory=list)
     flashes: list = field(default_factory=list)   # (t, dur, color, strength)
+    captions: List[Caption] = field(default_factory=list)   # on-screen Thai story text
 
     @property
     def duration(self):
@@ -160,4 +162,6 @@ class Scene:
                 k = (1 - (t - ft) / fd) ** 2 * strength
                 flash = Image.new("RGBA", frame.size, tuple(col) + (int(255 * min(1, k)),))
                 frame.alpha_composite(flash)
+        for cap in self.captions:
+            frame = draw_caption(frame, cap, t)
         return frame, (shot.grade or self.grade)

@@ -113,7 +113,7 @@ def render_video(scenes, only=None, jobs=4):
 def build_audio(scenes, force_vo=False, keep_music=False):
     from .audio import mix, music, sfx, subtitles, voiceover
     total = total_duration(scenes)
-    vo_items = voiceover.build(scenes, force=force_vo)
+    vo_items = voiceover.build(scenes, force=force_vo) if C.USE_VOICEOVER else []
     sfx.build_library()
     music_path = music.build(scenes, total, force=not keep_music)
     mix_path = mix.mix(scenes, total, vo_items, music_path)
@@ -161,6 +161,8 @@ def write_manifest(scenes, vo_items):
                                "shots": [{"name": s.name, "start": o / C.FPS + t, "duration": s.dur}
                                          for s, t in zip(sc.shots, sc.cut_times())]})
     data["voiceover"] = [{"id": v["id"], "start": v["start"], "duration": v["dur"], "text": v["text"]} for v in vo_items]
+    data["onscreen_text_th"] = [{"start": round(sc.start + c.t, 2), "duration": round(c.dur, 2), "style": c.style,
+                                 "lines": c.lines} for sc in scenes for c in sc.captions]
     (C.OUTPUT / "timeline_manifest.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
 
 
@@ -186,10 +188,12 @@ def main():
     if not a.audio_only or not video.exists():
         video = render_video(scenes, only=only, jobs=a.jobs)
     mix_path, subs = build_audio(scenes, force_vo=a.force_vo, keep_music=a.keep_music)
-    out = mux(video, mix_path, subs["ass"], burn=not a.no_burn_subs)
+    # without narration the Thai story text is part of the picture, so nothing to burn in
+    out = mux(video, mix_path, subs["ass"], burn=C.USE_VOICEOVER and not a.no_burn_subs)
     # sidecar subtitles next to the video
     shutil.copy(subs["srt"], C.OUTPUT / C.FINAL_NAME.replace(".mp4", ".th.srt"))
-    shutil.copy(subs["ass"], C.OUTPUT / C.FINAL_NAME.replace(".mp4", ".th.ass"))
+    if C.USE_VOICEOVER:
+        shutil.copy(subs["ass"], C.OUTPUT / C.FINAL_NAME.replace(".mp4", ".th.ass"))
     write_manifest(scenes, subs["vo_items"])
     print("done ->", out)
 
