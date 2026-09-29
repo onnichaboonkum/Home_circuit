@@ -4,7 +4,7 @@
     1920,
     1080
   ],
-  "total_seconds": 128.0,
+  "total_seconds": 133.2,
   "scenes": [
     {
       "name": "01_HOOK",
@@ -158,7 +158,7 @@
           "duration": 2.0
         },
         {
-          "name": "gateway_cabinet",
+          "name": "hceee_gateway_in_use",
           "start": 53.300000000000004,
           "duration": 2.0
         },
@@ -192,152 +192,157 @@
     {
       "name": "05_PHILOSOPHY",
       "start": 66.3,
-      "duration": 20.2,
+      "duration": 25.4,
       "shots": [
         {
-          "name": "gateway_hero",
+          "name": "hceee_hero",
           "start": 66.3,
-          "duration": 4.0
+          "duration": 3.8
         },
         {
-          "name": "gateway_pcb_callouts",
-          "start": 70.3,
+          "name": "hceee_specs",
+          "start": 70.1,
+          "duration": 4.8
+        },
+        {
+          "name": "hceee_block_diagram",
+          "start": 74.89999999999999,
           "duration": 3.4
         },
         {
-          "name": "developer_connect",
-          "start": 73.7,
-          "duration": 3.0
+          "name": "hceee_application",
+          "start": 78.3,
+          "duration": 3.6
         },
         {
-          "name": "developer_code",
-          "start": 76.7,
-          "duration": 3.2
+          "name": "arduino_code",
+          "start": 81.89999999999999,
+          "duration": 2.9
         },
         {
           "name": "build_modify_develop",
-          "start": 79.9,
-          "duration": 3.2
+          "start": 84.8,
+          "duration": 3.0
         },
         {
           "name": "made_for_developers",
-          "start": 83.1,
-          "duration": 3.4
+          "start": 87.8,
+          "duration": 3.9
         }
       ]
     },
     {
       "name": "06_CAPABILITIES",
-      "start": 86.5,
+      "start": 91.7,
       "duration": 18.0,
       "shots": [
         {
           "name": "headline",
-          "start": 86.5,
+          "start": 91.7,
           "duration": 3.0
         },
         {
           "name": "iot_solutions",
-          "start": 89.5,
+          "start": 94.7,
           "duration": 2.0
         },
         {
           "name": "gateway",
-          "start": 91.5,
+          "start": 96.7,
           "duration": 2.0
         },
         {
           "name": "smart_farm",
-          "start": 93.5,
+          "start": 98.7,
           "duration": 2.0
         },
         {
           "name": "drone_uav",
-          "start": 95.5,
+          "start": 100.7,
           "duration": 2.0
         },
         {
           "name": "hardware_development",
-          "start": 97.5,
+          "start": 102.7,
           "duration": 2.0
         },
         {
           "name": "firmware_development",
-          "start": 99.5,
+          "start": 104.7,
           "duration": 2.0
         },
         {
           "name": "coding_training",
-          "start": 101.5,
+          "start": 106.7,
           "duration": 3.0
         }
       ]
     },
     {
       "name": "07_BRAND_MESSAGE",
-      "start": 104.5,
+      "start": 109.7,
       "duration": 15.9,
       "shots": [
         {
           "name": "schematic",
-          "start": 104.5,
+          "start": 109.7,
           "duration": 1.2
         },
         {
           "name": "pcb",
-          "start": 105.7,
+          "start": 110.9,
           "duration": 1.2
         },
         {
           "name": "soldering",
-          "start": 106.9,
+          "start": 112.10000000000001,
           "duration": 1.2
         },
         {
           "name": "programming",
-          "start": 108.1,
+          "start": 113.3,
           "duration": 1.3
         },
         {
           "name": "engineer_thinking",
-          "start": 109.4,
+          "start": 114.60000000000001,
           "duration": 5.0
         },
         {
           "name": "hardware_testing",
-          "start": 114.4,
+          "start": 119.6,
           "duration": 0.9
         },
         {
-          "name": "gateway_operating",
-          "start": 115.3,
+          "name": "hceee_gateway",
+          "start": 120.5,
           "duration": 0.9
         },
         {
           "name": "drone_takeoff",
-          "start": 116.2,
+          "start": 121.4,
           "duration": 0.9
         },
         {
           "name": "smart_farm_sensor",
-          "start": 117.1,
+          "start": 122.3,
           "duration": 0.9
         },
         {
           "name": "students_coding",
-          "start": 118.0,
+          "start": 123.2,
           "duration": 2.4
         }
       ]
     },
     {
       "name": "08_ENDING",
-      "start": 120.4,
+      "start": 125.6,
       "duration": 7.6,
       "shots": [
         {
           "name": "logo_and_cta",
-          "start": 120.4,
+          "start": 125.6,
           "duration": 7.6
         }
       ]
@@ -482,7 +487,7 @@
       "duration": 1.7,
       "style": "top",
       "lines": [
-        "Gateway เชื่อมต่ออุปกรณ์"
+        "Arduino HcEee Gateway ใช้งานจริง"
       ]
     },
     {
@@ -527,7 +532,7 @@
     },
     {
       "start": 66.6,
-      "duration": 3.55,
+      "duration": 3.35,
       "style": "lower",
       "lines": [
         "สิ่งที่ Home Circuit อยากสร้าง",
@@ -535,47 +540,55 @@
       ]
     },
     {
-      "start": 70.6,
-      "duration": 2.95,
+      "start": 70.4,
+      "duration": 4.35,
       "style": "lower",
       "lines": [
         "แต่เป็น Hardware ที่ต่อยอดได้"
       ]
     },
     {
-      "start": 74.0,
+      "start": 75.2,
+      "duration": 2.95,
+      "style": "lower",
+      "lines": [
+        "หัวใจคือ ESP32 พร้อม I/O ครบในตัว"
+      ]
+    },
+    {
+      "start": 78.6,
+      "duration": 3.15,
+      "style": "lower",
+      "lines": [
+        "ต่อเซนเซอร์ อุปกรณ์ และระบบคลาวด์ได้ในตัวเดียว"
+      ]
+    },
+    {
+      "start": 82.2,
+      "duration": 2.45,
+      "style": "lower",
+      "lines": [
+        "เขียนโปรแกรมเพิ่มได้ด้วย Arduino"
+      ]
+    },
+    {
+      "start": 85.1,
       "duration": 2.55,
-      "style": "lower",
-      "lines": [
-        "เชื่อมต่อและปรับแต่งได้ทันที"
-      ]
-    },
-    {
-      "start": 77.0,
-      "duration": 2.75,
-      "style": "lower",
-      "lines": [
-        "เขียนโปรแกรมเพิ่มได้ ตามงานของคุณ"
-      ]
-    },
-    {
-      "start": 80.2,
-      "duration": 2.75,
       "style": "lower",
       "lines": [
         "สร้าง  •  ปรับแต่ง  •  พัฒนาต่อ"
       ]
     },
     {
-      "start": 83.4,
-      "duration": 2.95,
+      "start": 88.1,
+      "duration": 3.45,
       "style": "lower",
       "lines": [
-        "Hardware ที่ออกแบบมาเพื่อนักพัฒนา"
+        "“E” สามตัวใน HcEee = Electrical · Electronic · Embedded"
       ]
     },
     {
-      "start": 87.1,
+      "start": 92.3,
       "duration": 2.35,
       "style": "under",
       "lines": [
@@ -583,7 +596,7 @@
       ]
     },
     {
-      "start": 89.65,
+      "start": 94.85,
       "duration": 1.8,
       "style": "top",
       "lines": [
@@ -591,15 +604,15 @@
       ]
     },
     {
-      "start": 91.65,
+      "start": 96.85,
       "duration": 1.8,
       "style": "top",
       "lines": [
-        "อุปกรณ์ Gateway เชื่อมต่อระบบ"
+        "Arduino HcEee Gateway V1.0"
       ]
     },
     {
-      "start": 93.65,
+      "start": 98.85,
       "duration": 1.8,
       "style": "top",
       "lines": [
@@ -607,7 +620,7 @@
       ]
     },
     {
-      "start": 95.65,
+      "start": 100.85,
       "duration": 1.8,
       "style": "top",
       "lines": [
@@ -615,7 +628,7 @@
       ]
     },
     {
-      "start": 97.65,
+      "start": 102.85,
       "duration": 1.8,
       "style": "top",
       "lines": [
@@ -623,7 +636,7 @@
       ]
     },
     {
-      "start": 99.65,
+      "start": 104.85,
       "duration": 1.8,
       "style": "top",
       "lines": [
@@ -631,7 +644,7 @@
       ]
     },
     {
-      "start": 101.65,
+      "start": 106.85,
       "duration": 2.8,
       "style": "top",
       "lines": [
@@ -639,7 +652,7 @@
       ]
     },
     {
-      "start": 104.8,
+      "start": 110.0,
       "duration": 4.5,
       "style": "lower",
       "lines": [
@@ -648,7 +661,7 @@
       ]
     },
     {
-      "start": 109.7,
+      "start": 114.9,
       "duration": 1.8,
       "style": "hero",
       "lines": [
@@ -656,7 +669,7 @@
       ]
     },
     {
-      "start": 111.6,
+      "start": 116.8,
       "duration": 2.75,
       "style": "hero",
       "lines": [
@@ -664,7 +677,7 @@
       ]
     },
     {
-      "start": 114.7,
+      "start": 119.9,
       "duration": 5.7,
       "style": "lower",
       "lines": [
@@ -673,8 +686,8 @@
       ]
     },
     {
-      "start": 124.9,
-      "duration": 2.4,
+      "start": 130.4,
+      "duration": 2.1,
       "style": "under",
       "lines": [
         "มีไอเดีย? มาสร้างมันด้วยกัน"

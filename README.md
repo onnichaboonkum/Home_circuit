@@ -1,8 +1,8 @@
 # Home Circuit — Company Story (DRAFT / Pre-visualization)
 
 A cinematic **pre-visualization** of the Home Circuit company introduction
-video, rendered entirely from code. Every picture, product, logo and sound in this draft is **conceptual placeholders** made for
-client review. They are built so that real footage, product renders, the real logo and licensed music can replace them later without
+video, rendered entirely from code. Every picture, product and sound in this draft (except the official logo) is a **conceptual placeholder** made for
+client review. They are built so that real footage, product renders, and licensed music can replace them later without
 rewriting the edit.
 
 **Output:** `output/home_circuit_company_story_draft.mp4`
@@ -60,7 +60,7 @@ src/
     props.py                illustrated props (people silhouettes, tools, drone, gateway…)
     overlays.py             DRAFT VISUAL badge, labels, callouts, scope, code editor
     product.py              conceptual HC GW-01 gateway renders
-    logo.py                 TEMPORARY logo concept + animation
+    logo.py                 builds the official logo parts (the old concept mark is kept for reference only)
   scenes/
     common.py               shared overlays, trace wipes, plate-space animation helpers
     s01_hook.py … s08_ending.py   one module per scene (01_HOOK … 08_ENDING)
@@ -78,7 +78,7 @@ scripts/
 assets/
   images/                   plates: <name>__bg.png, __mid.png, __fx.png, __fg.png
   products/                 gateway_3q.png, gateway_front.png, gateway_pcb.png
-  logo/                     hc_logo_mark.png, hc_logo_full.png  (TEMPORARY)
+  logo/                     hc_logo_source.jpg (official) → hc_logo_official / mark / word / sub .png
   graphics/  footage/       reserved for real graphics / live-action footage
   fonts/                    Inter, Noto Sans Mono, HC Thai Sans (all SIL OFL)
 audio/
@@ -90,18 +90,18 @@ output/
   build/                    cache: scene chunks, stems, mix, stills (git-ignored)
 ```
 
-## Timeline (2:08)
+## Timeline (2:13)
 
 | Scene | Start | Length | Content (Thai on-screen text in brackets) |
 |---|---|---|---|
 | 01_HOOK | 0:00 | 8.3 s | macro cuts → **IT STARTED FROM A HOME.** (เทคโนโลยีหลายชิ้นของเรา ไม่ได้เริ่มต้นจากโรงงานใหญ่ / แต่มันเริ่มจาก “บ้านหลังหนึ่ง”) |
 | 02_BEGINNING | 0:08.3 | 18.2 s | Thai house → home workshop → **NEED IT? / BUILD IT.** (the engineers and their idea) |
 | 03_IDEA_TO_HARDWARE | 0:26.5 | 19.2 s | IDEA → DESIGN → BUILD → CODE → TEST → REAL SOLUTION, with a Thai explanation for each step |
-| 04_PROJECTS | 0:45.7 | 20.6 s | freelance → IoT, Gateway, drones, public sector, university, smart farm, embedded systems (Thai caption under each label) |
-| 05_PHILOSOPHY | 1:06.3 | 20.2 s | concept gateway → **BUILD. MODIFY. DEVELOP.** → **HARDWARE MADE FOR DEVELOPERS.** |
-| 06_CAPABILITIES | 1:26.5 | 18 s | **WHAT CAN HOME CIRCUIT BUILD?** (Home Circuit สร้างอะไรได้บ้าง?) → 7 capabilities, each with a Thai caption |
-| 07_BRAND_MESSAGE | 1:44.5 | 15.9 s | “ขายอะไร” → แต่มันเริ่มจาก… → “เราจะแก้ปัญหานี้ได้อย่างไร?” → **REAL PROBLEMS / ENGINEERING / SOLUTIONS** |
-| 08_ENDING | 2:00.4 | 7.6 s | temporary logo → **HAVE AN IDEA? LET'S BUILD IT.** (มีไอเดีย? มาสร้างมันด้วยกัน) → power-down |
+| 04_PROJECTS | 0:45.7 | 20.6 s | freelance → IoT, **Arduino HcEee Gateway (real product, application diagram)**, drones, public sector, university, smart farm, embedded systems |
+| 05_PHILOSOPHY | 1:06.3 | 25.4 s | **Arduino HcEee Gateway V1.0 (real product)**: product views → spec list → block diagram → application diagram → Arduino code → **BUILD. MODIFY. DEVELOP.** → **HARDWARE MADE FOR DEVELOPERS.** ("E" ×3 = Electrical · Electronic · Embedded) |
+| 06_CAPABILITIES | 1:31.7 | 18 s | **WHAT CAN HOME CIRCUIT BUILD?** → 7 capabilities; the GATEWAY item shows the real HcEee Gateway |
+| 07_BRAND_MESSAGE | 1:49.7 | 15.9 s | “ขายอะไร” → แต่มันเริ่มจาก… → “เราจะแก้ปัญหานี้ได้อย่างไร?” → **REAL PROBLEMS / ENGINEERING / SOLUTIONS** |
+| 08_ENDING | 2:05.6 | 7.6 s | light end card with the **official Home Circuit · STEM LAB logo** → **HAVE AN IDEA? LET'S BUILD IT.** (มีไอเดีย? มาสร้างมันด้วยกัน) → power-down |
 
 ## Editing guide
 
@@ -124,9 +124,9 @@ output/
   Camera moves and overlays keep working. Plate names are listed in `src/plates.py`.
   Animated screen content (code, scope traces, LEDs) is positioned by
   constants in `src/plates.py` and may need a nudge.
-- **Replace products:** overwrite `assets/products/*.png` (transparent PNG, same size).
-- **Replace the logo:** overwrite `assets/logo/hc_logo_mark.png` and set
-  `USE_LOGO_PNG = True` in `src/engine/logo.py`.
+- **Real product images:** the three client images live in `assets/products/hceee/*_source.jpg`. They are shown as image cards with a slow push-in (`src/engine/hceee.py`). Higher-resolution versions with the same layout can replace them directly, which makes every product shot sharper. The spec list is `hceee.SPECS`.
+- **Logo:** the ending uses the official logo. To update it, replace `assets/logo/hc_logo_source.jpg` (logo on a white
+  background) and run `python3 -m scripts.extract_logo`, which cuts out transparent mark, wordmark and STEM LAB parts.
 - **Replace the music:** put the track at `audio/music/music_score.wav` and render with `--keep-music`.
 - **Replace SFX:** drop a WAV with the same name into `audio/sfx/`.
 - **Look:** palette, grain, vignette and encoding are set in `src/config.py`. Grades
@@ -144,8 +144,9 @@ reframe with the same camera system and a vertical output size.
 | Element | Status |
 |---|---|
 | All imagery (workshop, people, projects, drone, farm, classroom…) | Procedural illustrated **concept plates**, not real footage |
-| HC GW-01 gateway, PROTO-02, HC-DEV boards | **Conceptual products**, marked `DRAFT VISUAL` on screen. Not real products |
-| Logo | **Temporary** concept (house outline + PCB trace) |
+| Gateway | **Real product: Arduino HcEee Gateway V1.0.** It uses the client's own images from `assets/products/hceee/` and specs from the Home Circuit post, and has no DRAFT badge |
+| PROTO-02, HC-DEV boards (scene 03), project scenes | **Conceptual**, marked `DRAFT VISUAL` on screen |
+| Logo | **Official** Home Circuit · STEM LAB logo (supplied by the client), used unmodified |
 | Voice-over | None, by design. The story is told with on-screen Thai text |
 | Music | Original generated score (120 BPM, no vocals). It is royalty-free and can be replaced with any licensed track using `--keep-music` |
 | SFX | Synthesized placeholders |

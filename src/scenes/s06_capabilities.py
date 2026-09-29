@@ -2,7 +2,7 @@
 import math
 
 from .. import config as C
-from ..engine import product
+from ..engine import hceee, product
 from ..engine import props as P
 from ..engine.camera import Plate
 from ..engine.canvas import glow_spot, surface, to_pil
@@ -22,7 +22,7 @@ ITEM = 2.0            # one bar at 120 BPM
 LAST_ITEM = 3.0
 ITEMS = ["IoT SOLUTIONS", "GATEWAY", "SMART FARM", "DRONE / UAV", "HARDWARE DEVELOPMENT",
          "FIRMWARE DEVELOPMENT", "CODING TRAINING"]
-ITEMS_TH = ["ระบบ IoT ครบวงจร", "อุปกรณ์ Gateway เชื่อมต่อระบบ", "ระบบฟาร์มอัจฉริยะ", "งานพัฒนาโดรน",
+ITEMS_TH = ["ระบบ IoT ครบวงจร", "Arduino HcEee Gateway V1.0", "ระบบฟาร์มอัจฉริยะ", "งานพัฒนาโดรน",
             "ออกแบบและพัฒนา Hardware", "พัฒนา Firmware", "อบรมการเขียนโปรแกรม"]
 STARTS = [HEADLINE + i * ITEM for i in range(len(ITEMS))]
 DURATION = STARTS[-1] + LAST_ITEM
@@ -73,6 +73,13 @@ def gateway_item(t, dur):
     return frame
 
 
+def gateway_real(t, dur):
+    frame = Plate.load("dark_grid").render(Cam(1.1 - 0.04 * t / dur))
+    hceee.card(frame, "transparent", t, dur, (C.W / 2, 640), 600, zoom=(1.0, 1.1), focus=(0.5, 0.45),
+               rise=(1 - min(1.0, t / 0.3)) * 40)
+    return frame
+
+
 def drone_hover_dyn(t, dur, plate, cam):
     cx, cy = CX, 640 + math.sin(t * 2.2) * 14
 
@@ -94,7 +101,7 @@ def build():
     shots = [FuncShot(HEADLINE, headline, "headline", grade="tech")]
     specs = [
         PlateShot(ITEM, "proj_iot", Cam(1.3, -200, -60), Cam(1.42, -180, -70), dyn=iot_dyn, grade="tech", blur_in=0.12),
-        FuncShot(ITEM, gateway_item, "gateway", grade="tech"),
+        FuncShot(ITEM, gateway_real, "gateway", grade="tech"),
         PlateShot(ITEM, "proj_farm", Cam(1.45, 120, -120), Cam(1.58, 140, -140), dyn=farm_dyn, grade="warm", blur_in=0.12),
         PlateShot(ITEM, "drone_sky", Cam(1.05, 0, 40), Cam(1.14, 0, 20), dyn=drone_hover_dyn, grade="tech", blur_in=0.12),
         PlateShot(ITEM, "build_pcb", Cam(1.7, -40, -20, -3), Cam(1.9, 0, -30, 0), dyn=pcb_dyn, grade="tech", blur_in=0.12),
@@ -104,7 +111,7 @@ def build():
     for sp, name in zip(specs, ITEMS):
         sp.name = name.lower().replace(" / ", "_").replace(" ", "_")
     shots += specs
-    ov = [badge(HEADLINE, DURATION)]
+    ov = [badge(HEADLINE, STARTS[1]), badge(STARTS[2], DURATION)]   # GATEWAY item = real product
     for i, (name, t0) in enumerate(zip(ITEMS, STARTS)):
         t1 = STARTS[i + 1] if i + 1 < len(STARTS) else DURATION
         ov.append(label(name, t0 + 0.02, t1, index=i + 1, total=len(ITEMS), y=136, size=66))

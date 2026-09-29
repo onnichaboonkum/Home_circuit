@@ -11,7 +11,9 @@ from ..engine.camera import Sprite
 from ..engine.canvas import fast_blur, glow_spot, set_col
 from ..engine.pcb import node, poly_partial, route, route_v, stroke_poly
 from ..engine.captions import Caption
-from ..engine.scene import SFX, PlateShot, Scene
+from ..engine import hceee
+from ..engine.camera import Plate
+from ..engine.scene import SFX, FuncShot, PlateShot, Scene
 from ..engine.text import font
 from ..engine.util import clamp, ease_out, progress
 from ..plates import CX, CY, FARM_SENSOR_LED, FREELANCE_SCREEN, GW_CAB_RECT, PUBLIC_BEACON, network_nodes
@@ -141,6 +143,13 @@ def gateway_dyn(t, dur, plate, cam):
     return [(gateway_leds(GW_CAB_RECT, t), 0.5)]
 
 
+def gateway_real(t, dur):
+    """Real product in an application: Arduino HcEee Gateway V1.0 wiring example."""
+    frame = Plate.load("dark_grid").render(Cam(1.04 + 0.04 * t / dur))
+    hceee.card(frame, "application", t, dur, (C.W / 2, 610), 860, zoom=(1.25, 1.45), focus=(0.44, 0.5))
+    return frame
+
+
 def drone_dyn(t, dur, plate, cam):
     dx = math.sin(t * 1.3) * 18
     dy = math.cos(t * 1.1) * 12
@@ -203,7 +212,7 @@ def build():
         PlateShot(d["freelance"], "proj_freelance", Cam(1.1, -40, -120), Cam(1.18, 0, -110), dyn=freelance_dyn, grade="warm", name="freelance_chat"),
         PlateShot(d["network"], "proj_network", Cam(1.35, 0, 0), Cam(1.0, 0, 0), dyn=network_dyn, grade="tech", name="project_network"),
         PlateShot(d["iot"], "proj_iot", Cam(1.04, 0, 20), Cam(1.12, 0, 0), dyn=iot_dyn, grade="tech", name="iot", blur_in=0.1),
-        PlateShot(d["gateway"], "proj_gateway_cabinet", Cam(1.3, 250, -330), Cam(1.4, 260, -340), dyn=gateway_dyn, grade="tech", name="gateway_cabinet", blur_in=0.1),
+        FuncShot(d["gateway"], gateway_real, "hceee_gateway_in_use", grade="tech"),
         PlateShot(d["drone"], "proj_drone", Cam(1.05, 0, 0, -2), Cam(1.16, 0, 0, 2), dyn=drone_dyn, grade="tech", name="drone_uav"),
         PlateShot(d["public"], "proj_public", Cam(1.08, 60, -60), Cam(1.16, 90, -60), dyn=public_dyn, grade="tech", name="public_sector_generic"),
         PlateShot(d["university"], "proj_university", Cam(1.06, -40, 0), Cam(1.12, 40, 0), dyn=university_dyn, shake=0.5, seed=12, grade="neutral", name="university"),
@@ -211,7 +220,8 @@ def build():
         PlateShot(d["embedded"], "proj_embedded", Cam(1.1, -60, 0), Cam(1.22, 60, 20), dyn=embedded_dyn, grade="tech", name="embedded", blur_in=0.1),
     ]
     ov = [
-        badge(T["network"] + 0.1, DURATION),
+        badge(T["network"] + 0.1, T["gateway"]),
+        badge(T["drone"], DURATION),   # the gateway shot is the real product: no DRAFT badge
         label("IoT", T["iot"], T["gateway"]),
         label("GATEWAY", T["gateway"], T["drone"]),
         label("DRONE / UAV", T["drone"], T["public"]),
@@ -228,7 +238,7 @@ def build():
         Caption(0.3, T["network"] - 0.35, ["จากงาน Freelance เล็ก ๆ"]),
         Caption(T["network"] + 0.1, T["iot"] - T["network"] - 0.12, ["แล้วโปรเจกต์ก็ใหญ่ขึ้นเรื่อย ๆ"]),
         top("iot", "IoT และระบบควบคุม"),
-        top("gateway", "Gateway เชื่อมต่ออุปกรณ์"),
+        top("gateway", "Arduino HcEee Gateway ใช้งานจริง"),
         top("drone", "งานพัฒนาโดรน"),
         top("public", "เทคโนโลยีเพื่อภาครัฐ (ภาพจำลอง)"),
         top("university", "โปรเจกต์นักศึกษามหาวิทยาลัย"),

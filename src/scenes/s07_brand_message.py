@@ -6,7 +6,9 @@ from .. import config as C
 from ..engine import props as P
 from ..engine.pcb import draw_schematic
 from ..engine.captions import Caption
-from ..engine.scene import SFX, PlateShot, Scene
+from ..engine import hceee
+from ..engine.camera import Plate
+from ..engine.scene import SFX, FuncShot, PlateShot, Scene
 from ..engine.text import Line
 from ..engine.util import ease_in_out, progress
 from ..plates import BOARD_RECT, CX, GW_CAB_RECT
@@ -35,6 +37,12 @@ def schematic_dyn(t, dur, plate, cam):
                          glow_r=4, glow_s=0.5), 0.0)]
 
 
+def gateway_real(t, dur):
+    frame = Plate.load("dark_grid").render(Cam(1.05))
+    hceee.card(frame, "views", t, dur, (C.W / 2, 470), 1000, zoom=(1.05, 1.15), focus=(0.7, 0.5))
+    return frame
+
+
 def takeoff_dyn(t, dur, plate, cam):
     lift = ease_in_out(progress(t, 0.05, dur)) * 330
     cx, cy = CX, 1010 - lift
@@ -53,7 +61,7 @@ def build():
         PlateShot(d["programming"], "hook_code", Cam(1.3, -100, -60), Cam(1.36, -60, -60), dyn=code_dyn, grade="tech", name="programming"),
         PlateShot(d["thinker"], "brand_thinker", Cam(1.0, 60, 0), Cam(1.16, 140, -30), grade="warm", name="engineer_thinking"),
         PlateShot(d["testing"], "test_bench", Cam(1.3, -200, -60), Cam(1.38, -180, -60), dyn=test_dyn, grade="neutral", name="hardware_testing", blur_in=0.08),
-        PlateShot(d["gateway"], "proj_gateway_cabinet", Cam(1.5, 280, -340), Cam(1.6, 290, -340), dyn=gateway_dyn, grade="tech", name="gateway_operating"),
+        FuncShot(d["gateway"], gateway_real, "hceee_gateway", grade="tech"),
         PlateShot(d["drone"], "drone_sky", Cam(1.0, 0, 0), Cam(1.06, 0, -20), dyn=takeoff_dyn, grade="tech", name="drone_takeoff"),
         PlateShot(d["farm"], "proj_farm", Cam(1.5, 120, -140), Cam(1.6, 130, -150), dyn=farm_dyn, grade="warm", name="smart_farm_sensor"),
         PlateShot(d["students"], "classroom", Cam(1.05, 0, -150), Cam(1.12, 0, -170), dyn=class_dyn, grade="tech", name="students_coding"),
@@ -64,7 +72,7 @@ def build():
         title([Line("REAL PROBLEMS.", "display_black", 104, C.WHITE, -5)], t1 + 0.05, t2, anim="mask", center=(C.W / 2, 470), dur_in=0.5, dur_out=0.12),
         title([Line("REAL ENGINEERING.", "display_black", 104, C.WHITE, -5)], t2, t3, anim="mask", center=(C.W / 2, 470), dur_in=0.5, dur_out=0.12),
         title([Line("REAL SOLUTIONS.", "display_black", 104, C.GREEN, -5)], t3, DURATION, anim="mask", center=(C.W / 2, 470), dur_in=0.5, dur_out=0.0),
-        badge(T["gateway"], T["students"]),
+        badge(T["drone"], T["students"]),
     ]
     th = T["thinker"]
     caps = [

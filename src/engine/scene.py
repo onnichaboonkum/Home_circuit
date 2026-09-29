@@ -125,6 +125,7 @@ class Scene:
     sfx: List[SFX] = field(default_factory=list)
     grade: str = "neutral"
     grain: Optional[float] = None
+    vignette: Optional[float] = None
     # music intent markers (scene-local): list of (t, kind) e.g. (15.0, "hit"), (4.5, "dip")
     music_marks: list = field(default_factory=list)
     flashes: list = field(default_factory=list)   # (t, dur, color, strength)
