@@ -35,6 +35,7 @@ class Caption:
     style: str = "lower"
     y: Optional[float] = None   # centre y override
     color: Optional[tuple] = None
+    shadow: bool = True          # drop shadow (turn off on light backgrounds)
 
     @property
     def t_out(self):
@@ -116,8 +117,9 @@ def draw_caption(frame, cap: Caption, t):
         a = clamp(p * 1.8) * a_out
         x = C.W / 2 - im.width / 2
         if a > 0.01:
-            sh = _shadow(key, size, line)
-            frame.alpha_composite(_a(sh, a * 0.85), dest=(int(x - 24), int(y + dy - 24 + 3)))
+            if cap.shadow:
+                sh = _shadow(key, size, line)
+                frame.alpha_composite(_a(sh, a * 0.85), dest=(int(x - 24), int(y + dy - 24 + 3)))
             frame.alpha_composite(_a(im, a), dest=(int(x), int(y + dy)))
         y += im.height + gap
     return frame

@@ -1,4 +1,6 @@
-"""TEMPORARY Home Circuit logo concept: house geometry drawn as a PCB trace,
+"""Logo helpers. The ending now uses the OFFICIAL logo (assets/logo/hc_logo_*.png,
+cut from hc_logo_source.jpg by scripts/extract_logo.py). The procedural
+TEMPORARY Home Circuit logo concept below is kept only for reference:: house geometry drawn as a PCB trace,
 with a green circuit 'trident' growing from the door.  Replace
 ``assets/logo/hc_logo_mark.png`` / ``hc_logo_full.png`` with the real logo later
 (the ending scene uses the PNGs when ``USE_LOGO_PNG`` is True).
@@ -77,15 +79,11 @@ def load_mark(size):
 
 
 def build_logo_files(force=False):
+    """The official logo lives in assets/logo/hc_logo_source.jpg; cut its transparent parts."""
     C.LOGO_DIR.mkdir(parents=True, exist_ok=True)
-    m = C.LOGO_DIR / "hc_logo_mark.png"
-    f = C.LOGO_DIR / "hc_logo_full.png"
-    if force or not m.exists():
-        draw_mark(800).save(m)
-        print("  built  logo mark")
-    if force or not f.exists():
-        bg = Image.new("RGBA", (2400, 1600), C.BLACK + (255,))
-        lg = full_logo(560, 180)
-        bg.alpha_composite(glow(lg, 10, 0.3), dest=((2400 - lg.width) // 2, (1600 - lg.height) // 2))
-        bg.save(f)
-        print("  built  logo full")
+    src = C.LOGO_DIR / "hc_logo_source.jpg"
+    needed = [C.LOGO_DIR / f"hc_logo_{n}.png" for n in ("official", "mark", "word", "sub")]
+    if src.exists() and (force or not all(p.exists() for p in needed)):
+        from scripts.extract_logo import main as extract
+        extract()
+        print("  built  official logo parts")

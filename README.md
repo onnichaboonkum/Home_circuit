@@ -60,7 +60,7 @@ src/
     props.py                illustrated props (people silhouettes, tools, drone, gateway…)
     overlays.py             DRAFT VISUAL badge, labels, callouts, scope, code editor
     product.py              conceptual HC GW-01 gateway renders
-    logo.py                 TEMPORARY logo concept + animation
+    logo.py                 builds the official logo parts (the old concept mark is kept for reference only)
   scenes/
     common.py               shared overlays, trace wipes, plate-space animation helpers
     s01_hook.py … s08_ending.py   one module per scene (01_HOOK … 08_ENDING)
@@ -78,7 +78,7 @@ scripts/
 assets/
   images/                   plates: <name>__bg.png, __mid.png, __fx.png, __fg.png
   products/                 gateway_3q.png, gateway_front.png, gateway_pcb.png
-  logo/                     hc_logo_mark.png, hc_logo_full.png  (TEMPORARY)
+  logo/                     hc_logo_source.jpg (official) → hc_logo_official / mark / word / sub .png
   graphics/  footage/       reserved for real graphics / live-action footage
   fonts/                    Inter, Noto Sans Mono, HC Thai Sans (all SIL OFL)
 audio/
@@ -101,7 +101,7 @@ output/
 | 05_PHILOSOPHY | 1:06.3 | 20.2 s | concept gateway → **BUILD. MODIFY. DEVELOP.** → **HARDWARE MADE FOR DEVELOPERS.** |
 | 06_CAPABILITIES | 1:26.5 | 18 s | **WHAT CAN HOME CIRCUIT BUILD?** (Home Circuit สร้างอะไรได้บ้าง?) → 7 capabilities, each with a Thai caption |
 | 07_BRAND_MESSAGE | 1:44.5 | 15.9 s | “ขายอะไร” → แต่มันเริ่มจาก… → “เราจะแก้ปัญหานี้ได้อย่างไร?” → **REAL PROBLEMS / ENGINEERING / SOLUTIONS** |
-| 08_ENDING | 2:00.4 | 7.6 s | temporary logo → **HAVE AN IDEA? LET'S BUILD IT.** (มีไอเดีย? มาสร้างมันด้วยกัน) → power-down |
+| 08_ENDING | 2:00.4 | 7.6 s | light end card with the **official Home Circuit · STEM LAB logo** → **HAVE AN IDEA? LET'S BUILD IT.** (มีไอเดีย? มาสร้างมันด้วยกัน) → power-down |
 
 ## Editing guide
 
@@ -125,8 +125,8 @@ output/
   Animated screen content (code, scope traces, LEDs) is positioned by
   constants in `src/plates.py` and may need a nudge.
 - **Replace products:** overwrite `assets/products/*.png` (transparent PNG, same size).
-- **Replace the logo:** overwrite `assets/logo/hc_logo_mark.png` and set
-  `USE_LOGO_PNG = True` in `src/engine/logo.py`.
+- **Logo:** the ending uses the official logo. To update it, replace `assets/logo/hc_logo_source.jpg` (logo on a white
+  background) and run `python3 -m scripts.extract_logo`, which cuts out transparent mark, wordmark and STEM LAB parts.
 - **Replace the music:** put the track at `audio/music/music_score.wav` and render with `--keep-music`.
 - **Replace SFX:** drop a WAV with the same name into `audio/sfx/`.
 - **Look:** palette, grain, vignette and encoding are set in `src/config.py`. Grades
@@ -145,7 +145,7 @@ reframe with the same camera system and a vertical output size.
 |---|---|
 | All imagery (workshop, people, projects, drone, farm, classroom…) | Procedural illustrated **concept plates**, not real footage |
 | HC GW-01 gateway, PROTO-02, HC-DEV boards | **Conceptual products**, marked `DRAFT VISUAL` on screen. Not real products |
-| Logo | **Temporary** concept (house outline + PCB trace) |
+| Logo | **Official** Home Circuit · STEM LAB logo (supplied by the client), used unmodified |
 | Voice-over | None, by design. The story is told with on-screen Thai text |
 | Music | Original generated score (120 BPM, no vocals). It is royalty-free and can be replaced with any licensed track using `--keep-music` |
 | SFX | Synthesized placeholders |

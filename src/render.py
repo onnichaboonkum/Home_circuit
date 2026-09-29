@@ -48,7 +48,7 @@ def frame_offsets(scenes):
 def render_frame(sc, f_local, f_global):
     t = f_local / C.FPS
     frame, grade = sc.render(t)
-    return finish(frame, f_global, grade=grade, grain=sc.grain)
+    return finish(frame, f_global, grade=grade, grain=sc.grain, vignette=sc.vignette)
 
 
 def ffmpeg_writer(path, crf=C.X264_CRF_SCENES):
