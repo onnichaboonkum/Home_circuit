@@ -3,7 +3,8 @@ import math
 
 from .. import config as C
 from ..engine.pcb import TraceAnim, route
-from ..engine.scene import VO, SFX, PlateShot, Scene, Overlay
+from ..engine.captions import Caption
+from ..engine.scene import SFX, PlateShot, Scene, Overlay
 from ..engine.util import flicker
 from ..plates import ENCLOSURE_LED, LAPTOP_RECT_WS, MULTIMETER_DISPLAY_TABLE, SCOPE_RECT_WS
 from .common import (Cam, Line, code_layer, glow_dot_layer, scope_in_plate, text_in_plate, title,
@@ -11,10 +12,10 @@ from .common import (Cam, Line, code_layer, glow_dot_layer, scope_in_plate, text
 
 # ---- shot durations - edit here
 D = {
-    "exterior": 3.5,
-    "wide": 4.0,
-    "table": 2.5,
-    "scope": 2.5,
+    "exterior": 3.7,
+    "wide": 4.6,
+    "table": 3.0,
+    "scope": 2.4,
     "need_it": 2.0,
     "build_it": 2.5,
 }
@@ -86,19 +87,16 @@ def build():
         title([Line("BUILD IT.", "display_black", 150, C.WHITE, -10)], T_BUILD, T_BUILD + D["build_it"],
               anim="slam", dur_in=0.35, dur_out=0.0, center=(C.W / 2, 250)),
     ]
-    vo = [
-        VO("vo03", 0.6, "Home Circuit เริ่มต้นจากกลุ่มวิศวกรไฟฟ้าและเมคคาทรอนิกส์ ที่มีประสบการณ์จากการทำงานในบริษัท",
-           [["Home Circuit เริ่มต้นจากกลุ่มวิศวกร", "ไฟฟ้าและเมคคาทรอนิกส์"], ["ที่มีประสบการณ์จากการทำงานในบริษัท"]],
-           "โฮมเซอร์กิต เริ่มต้นจากกลุ่มวิศวกรไฟฟ้าและเมคคาทรอนิกส์ ที่มีประสบการณ์จากการทำงานในบริษัท", max_dur=6.3),
-        VO("vo04", 7.3, "และมีความคิดง่าย ๆ เหมือนกันว่า", [["และมีความคิดง่าย ๆ เหมือนกันว่า"]],
-           "และมีความคิดง่ายง่าย เหมือนกันว่า", max_dur=2.3),
-        VO("vo05", 10.1, "ถ้าอุปกรณ์ที่เราต้องการยังไม่มี ทำไมเราไม่สร้างมันขึ้นมาเอง?",
-           [["ถ้าอุปกรณ์ที่เราต้องการยังไม่มี", "ทำไมเราไม่สร้างมันขึ้นมาเอง?"]],
-           "ถ้าอุปกรณ์ที่เราต้องการยังไม่มี ทำไมเราไม่สร้างมันขึ้นมาเอง", max_dur=4.2),
+    caps = [
+        Caption(0.3, 3.35, ["Home Circuit เริ่มต้นที่บ้านหลังเล็ก ๆ"]),
+        Caption(3.85, 4.35, ["กลุ่มวิศวกรไฟฟ้าและเมคคาทรอนิกส์", "ที่เคยทำงานในบริษัทมาก่อน"]),
+        Caption(8.4, 2.8, ["และทุกคนคิดเหมือนกันว่า…"]),
+        Caption(11.4, T_BUILD - 11.45, ["“ถ้าอุปกรณ์ที่ต้องการยังไม่มี", "ทำไมไม่สร้างเองล่ะ?”"]),
+        Caption(T_BUILD + 0.4, D["build_it"] - 0.4, ["ก็สร้างขึ้นมาเองเลย"]),
     ]
-    sfx = [SFX(0.0, "room_tone", -26), SFX(3.5, "solder_sizzle", -26), SFX(6.0, "keyboard", -24),
-           SFX(8.2, "beep", -26), SFX(t_need + 0.25, "whoosh_soft", -22),
+    sfx = [SFX(0.0, "room_tone", -26), SFX(3.7, "solder_sizzle", -26), SFX(6.2, "keyboard", -24),
+           SFX(8.6, "beep", -26), SFX(t_need + 0.25, "whoosh_soft", -22),
            SFX(T_BUILD, "relay_click", -10), SFX(T_BUILD, "low_impact", -6), SFX(T_BUILD + 0.05, "power_on", -16)]
-    return Scene("02_BEGINNING", shots, ov, vo, sfx, grade="warm",
+    return Scene("02_BEGINNING", shots, ov, [], sfx, grade="warm", captions=caps,
                  music_marks=[(T_BUILD - 1.5, "riser_short"), (T_BUILD, "hit")],
                  flashes=[(T_BUILD, 0.3, C.GREEN, 0.35)])

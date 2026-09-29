@@ -7,7 +7,8 @@ from .. import config as C
 from ..engine import props as P
 from ..engine.canvas import set_col, solid
 from ..engine.pcb import qfp
-from ..engine.scene import VO, SFX, FuncShot, PlateShot, Scene
+from ..engine.captions import Caption
+from ..engine.scene import SFX, FuncShot, PlateShot, Scene
 from ..engine.util import ease_out, flicker, progress
 from ..plates import CX, CY, SCOPE_RECT_HOOK
 from .common import (Cam, Line, code_layer, glow_dot_layer, plate_layer, scope_in_plate,
@@ -16,7 +17,7 @@ from .common import (Cam, Line, code_layer, glow_dot_layer, plate_layer, scope_i
 # ---- shot durations (seconds) - edit here
 D_BLACK = 0.5
 D_MACRO = [0.8, 0.7, 0.8, 0.75, 0.85, 0.75]   # solder, components, code, scope, hands, drone
-D_TITLE = 7.5 - D_BLACK - sum(D_MACRO)        # remainder -> typography card
+D_TITLE = 8.3 - D_BLACK - sum(D_MACRO)        # remainder -> typography card
 
 HOOK_CODE = [
     "#include \"hc_io.h\"",
@@ -80,17 +81,14 @@ def build():
     t_title = D_BLACK + sum(D_MACRO)
     ov = [title([Line("IT STARTED", "display_black", 124, C.WHITE, -5),
                  Line("FROM A HOME.", "display_black", 124, C.WHITE, -5)],
-                t_title + 0.15, 7.5, anim="mask", dur_in=0.8, dur_out=0.0)]
-    vo = [VO("vo01", 0.65, "เทคโนโลยีหลายชิ้นของเรา ไม่ได้เริ่มต้นจากโรงงานใหญ่",
-             [["เทคโนโลยีหลายชิ้นของเรา", "ไม่ได้เริ่มต้นจากโรงงานใหญ่"]],
-             "เทคโนโลยีหลายชิ้นของเรา ไม่ได้เริ่มต้นจากโรงงานใหญ่", max_dur=3.7),
-          VO("vo02", 4.75, "แต่มันเริ่มจากบ้านหลังหนึ่ง", [["แต่มันเริ่มจากบ้านหลังหนึ่ง"]],
-             "แต่มันเริ่มจากบ้านหลังหนึ่ง", max_dur=2.3)]
+                t_title + 0.15, 8.3, anim="mask", dur_in=0.8, dur_out=0.0, center=(C.W / 2, 450))]
+    caps = [Caption(0.6, t_title - 0.65, ["เทคโนโลยีหลายชิ้นของเรา", "ไม่ได้เริ่มต้นจากโรงงานใหญ่"]),
+            Caption(t_title + 0.55, 8.3 - t_title - 0.55, ["แต่มันเริ่มจาก “บ้านหลังหนึ่ง”"], style="under", y=700)]
     cuts = [D_BLACK + sum(D_MACRO[:i]) for i in range(len(D_MACRO))]
     sfx = [SFX(0.2, "relay_click", -6)]
     sfx += [SFX(cuts[0], "solder_sizzle", -20), SFX(cuts[2], "keyboard", -18), SFX(cuts[3], "beep", -22),
             SFX(cuts[5], "servo", -22), SFX(t_title, "low_impact", -10)]
     for c in cuts:
         sfx.append(SFX(c, "tick", -24))
-    return Scene("01_HOOK", shots, ov, vo, sfx, grade="neutral",
+    return Scene("01_HOOK", shots, ov, [], sfx, grade="neutral", captions=caps,
                  music_marks=[(t_title, "hit_soft")], flashes=[(t_title, 0.25, C.WARM, 0.25)])

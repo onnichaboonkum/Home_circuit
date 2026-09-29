@@ -45,9 +45,14 @@ def events(vo_items):
     return evs
 
 
+def caption_events(scenes):
+    """On-screen story text as timed events (sidecar SRT for accessibility / translation)."""
+    return [[sc.start + c.t, sc.start + c.t_out, c.lines[:2]] for sc in scenes for c in sc.captions]
+
+
 def build(scenes, vo_items):
     C.BUILD.mkdir(parents=True, exist_ok=True)
-    evs = events(vo_items)
+    evs = events(vo_items) if vo_items else caption_events(scenes)
     ass = [
         "[Script Info]", "ScriptType: v4.00+", f"PlayResX: {C.W}", f"PlayResY: {C.H}", "WrapStyle: 2",
         "ScaledBorderAndShadow: yes", "", "[V4+ Styles]",

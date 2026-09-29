@@ -10,7 +10,8 @@ from ..engine import props as P
 from ..engine.camera import Sprite
 from ..engine.canvas import fast_blur, glow_spot, set_col
 from ..engine.pcb import node, poly_partial, route, route_v, stroke_poly
-from ..engine.scene import VO, SFX, PlateShot, Scene
+from ..engine.captions import Caption
+from ..engine.scene import SFX, PlateShot, Scene
 from ..engine.text import font
 from ..engine.util import clamp, ease_out, progress
 from ..plates import CX, CY, FARM_SENSOR_LED, FREELANCE_SCREEN, GW_CAB_RECT, PUBLIC_BEACON, network_nodes
@@ -18,15 +19,15 @@ from .common import Cam, badge, caption, glow_dot_layer, label, plate_layer
 
 # ---- shot table (name, duration) - edit here
 SHOTS = [
-    ("freelance", 2.6),
-    ("network", 2.2),
+    ("freelance", 3.0),
+    ("network", 2.6),
     ("iot", 2.0),
-    ("gateway", 1.8),
-    ("drone", 1.8),
-    ("public", 1.8),
-    ("university", 2.0),
+    ("gateway", 2.0),
+    ("drone", 2.0),
+    ("public", 2.2),
+    ("university", 2.2),
     ("farm", 2.2),
-    ("embedded", 2.6),
+    ("embedded", 2.4),
 ]
 T = {}
 _acc = 0.0
@@ -215,20 +216,24 @@ def build():
         label("GATEWAY", T["gateway"], T["drone"]),
         label("DRONE / UAV", T["drone"], T["public"]),
         label("ENGINEERING PROJECTS", T["public"], T["farm"], size=54),
-        caption("PUBLIC-SECTOR TECHNOLOGY  ·  GENERIC CONCEPT", T["public"] + 0.2, T["university"], y=196),
-        caption("UNIVERSITY ENGINEERING PROJECTS", T["university"] + 0.05, T["farm"], y=196),
-        label("IoT", T["farm"], T["embedded"], sub="SMART AGRICULTURE"),
+        label("SMART FARM", T["farm"], T["embedded"]),
         label("EMBEDDED SYSTEMS", T["embedded"], DURATION),
     ]
-    vo = [
-        VO("vo07", 0.3, "จากงาน Freelance เล็ก ๆ โปรเจกต์เริ่มเดินทางไปไกลขึ้น",
-           [["จากงาน Freelance เล็ก ๆ", "โปรเจกต์เริ่มเดินทางไปไกลขึ้น"]],
-           "จากงานฟรีแลนซ์เล็กเล็ก โปรเจกต์เริ่มเดินทางไปไกลขึ้น", max_dur=3.9),
-        VO("vo08", 4.7, "ตั้งแต่งาน IoT และระบบควบคุม งานพัฒนาโดรน เทคโนโลยีสำหรับหน่วยงานภาครัฐ ไปจนถึงโปรเจกต์ของนักศึกษามหาวิทยาลัย",
-           [["ตั้งแต่งาน IoT และระบบควบคุม", "งานพัฒนาโดรน"],
-            ["เทคโนโลยีสำหรับหน่วยงานภาครัฐ", "ไปจนถึงโปรเจกต์ของนักศึกษามหาวิทยาลัย"]],
-           "ตั้งแต่งานไอโอทีและระบบควบคุม งานพัฒนาโดรน เทคโนโลยีสำหรับหน่วยงานภาครัฐ ไปจนถึงโปรเจกต์ของนักศึกษามหาวิทยาลัย",
-           max_dur=9.2),
+    def top(name, text):
+        t0 = T[name]
+        t1 = t0 + dict(SHOTS)[name]
+        return Caption(t0 + 0.25, t1 - t0 - 0.3, [text], style="top")
+
+    caps = [
+        Caption(0.3, T["network"] - 0.35, ["จากงาน Freelance เล็ก ๆ"]),
+        Caption(T["network"] + 0.1, T["iot"] - T["network"] - 0.12, ["แล้วโปรเจกต์ก็ใหญ่ขึ้นเรื่อย ๆ"]),
+        top("iot", "IoT และระบบควบคุม"),
+        top("gateway", "Gateway เชื่อมต่ออุปกรณ์"),
+        top("drone", "งานพัฒนาโดรน"),
+        top("public", "เทคโนโลยีเพื่อภาครัฐ (ภาพจำลอง)"),
+        top("university", "โปรเจกต์นักศึกษามหาวิทยาลัย"),
+        top("farm", "ระบบฟาร์มอัจฉริยะ"),
+        top("embedded", "ระบบสมองกลฝังตัว"),
     ]
     sfx = [SFX(0.15, "notify", -20), SFX(0.75, "notify", -22), SFX(1.45, "notify", -20),
            SFX(T["network"], "whoosh", -18), SFX(T["drone"], "drone", -14), SFX(T["university"], "servo", -18)]
@@ -239,5 +244,5 @@ def build():
             sfx.append(SFX(t0 - 0.12, "whoosh_soft", -20))
     for t0 in (T["iot"] + 0.3, T["gateway"] + 0.4, T["farm"] + 0.5):
         sfx.append(SFX(t0, "beep", -24))
-    return Scene("04_PROJECTS", shots, ov, vo, sfx, grade="tech",
+    return Scene("04_PROJECTS", shots, ov, [], sfx, grade="tech", captions=caps,
                  music_marks=[(t0, "accent") for n, t0 in T.items() if n != "freelance"])

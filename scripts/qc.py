@@ -18,7 +18,7 @@ checks = {
     "file": str(out),
     "size_MB": round(int(info["format"]["size"]) / 1e6, 1),
     "duration_s": round(dur, 3),
-    "duration_ok (105-120 s)": 105 <= dur <= 120.5,
+    "duration_ok (105-135 s)": 105 <= dur <= 135,
     "resolution": f'{v["width"]}x{v["height"]}',
     "resolution_ok": (v["width"], v["height"]) == (1920, 1080),
     "fps": fps, "fps_ok": abs(fps - 30) < 0.01,

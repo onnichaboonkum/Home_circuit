@@ -12,7 +12,8 @@ from .. import config as C
 from ..engine.canvas import linear_fill, rounded_rect, set_col, surface, to_pil
 from ..engine.overlays import draw_scope
 from ..engine.pcb import draw_cad_layout, draw_schematic, node, poly_partial, stroke_poly
-from ..engine.scene import VO, SFX, PlateShot, Scene, Overlay
+from ..engine.captions import Caption
+from ..engine.scene import SFX, PlateShot, Scene, Overlay
 from ..engine.text import text_image
 from ..engine.util import clamp, ease_in_out, ease_out, progress, rng
 from ..plates import (BOARD_RECT, CODE_RECT_FW, CX, CY, METER_RECT_TB, PROTO_LEDS, SCOPE_RECT_TB,
@@ -23,7 +24,7 @@ from .s01_hook import solder_dyn
 
 # ---- stage timing (scene-local seconds) - edit here
 STAGES = [("IDEA", 0.0), ("DESIGN", 3.0), ("BUILD", 6.0), ("CODE", 9.0), ("TEST", 11.8), ("REAL SOLUTION", 14.6)]
-DURATION = 17.5
+DURATION = 19.2
 SPLIT_DESIGN = 4.5   # schematic -> PCB layout
 SPLIT_BUILD = 7.5    # bare PCB -> soldering
 
@@ -268,11 +269,14 @@ def build():
             ov.append(trace_wipe(t0, 0.5, seed=10 + i))
     ov.append(badge(st["BUILD"], DURATION))
     ov.append(hud_corners(st["REAL SOLUTION"] + 0.3, DURATION, "PROTO-02  ·  BENCH TEST", "● SYSTEM RUNNING"))
-    vo = [VO("vo06", 0.5, "จากการทดลองทำอุปกรณ์เพื่อใช้งานกันเอง ค่อย ๆ กลายเป็นงานพัฒนา Hardware และ Firmware ที่เริ่มต้นจากปัญหาในการใช้งานจริง",
-             [["จากการทดลองทำอุปกรณ์เพื่อใช้งานกันเอง", "ค่อย ๆ กลายเป็นงานพัฒนา Hardware และ Firmware"],
-              ["ที่เริ่มต้นจากปัญหาในการใช้งานจริง"]],
-             "จากการทดลองทำอุปกรณ์เพื่อใช้งานกันเอง ค่อยค่อยกลายเป็นงานพัฒนาฮาร์ดแวร์และเฟิร์มแวร์ ที่เริ่มต้นจากปัญหาในการใช้งานจริง",
-             max_dur=8.4)]
+    st_t = [t0 for _, t0 in STAGES] + [DURATION]
+    texts = [["เริ่มจากปัญหาที่เจอจริง"],
+             ["ออกแบบวงจร และลายวงจร (PCB)"],
+             ["ประกอบและบัดกรีบอร์ดต้นแบบ"],
+             ["เขียนโปรแกรมควบคุม (Firmware)"],
+             ["ทดสอบจนใช้งานได้จริง"],
+             ["จากของที่ทำไว้ใช้เอง", "สู่งานพัฒนา Hardware และ Firmware"]]
+    caps = [Caption(st_t[i] + 0.25, st_t[i + 1] - st_t[i] - 0.4, texts[i]) for i in range(len(texts))]
     sfx = [SFX(0.1, "pencil", -18)]
     for name, t0 in STAGES[1:]:
         sfx.append(SFX(t0 - 0.25, "whoosh_soft", -22))
@@ -280,5 +284,5 @@ def build():
     sfx += [SFX(SPLIT_BUILD, "solder_sizzle", -20), SFX(st["CODE"] + 0.2, "keyboard", -20),
             SFX(st["CODE"] + 2.4, "beep", -20), SFX(st["TEST"] + 0.5, "beep", -18),
             SFX(st["REAL SOLUTION"], "relay_click", -14), SFX(st["REAL SOLUTION"] + 0.1, "power_on", -18)]
-    return Scene("03_IDEA_TO_HARDWARE", shots, ov, vo, sfx, grade="neutral",
+    return Scene("03_IDEA_TO_HARDWARE", shots, ov, [], sfx, grade="neutral", captions=caps,
                  music_marks=[(t0, "accent") for _, t0 in STAGES[1:]])
