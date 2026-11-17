@@ -486,7 +486,7 @@ def build_timeline():
     K["c2"] = wt("v4", "แล้ว", v4s, default=1.2)
     K["c3"] = wt("v4", "มีทั้ง", v4s, default=2.5)
     K["c4"] = wt("v4", "ทักแชท", v4s, default=5.0)
-    DURATION = round((v4e + 2.4) * FPS) / FPS
+    DURATION = round((v4e + 3.4) * FPS) / FPS     # hold the contact card on screen
     # captions from word timings
     CAPTIONS = []
     for sid, _, chunks in VO_SCRIPT:
@@ -705,21 +705,65 @@ def draw_cta(frame, t):
     # equation card
     s3, a3 = pop(t, K["c3"], 0.5)
     if a3 > 0:
-        paste_scaled(frame, equation_card(), W / 2, 900, 0.9 + 0.1 * s3, a3)
+        paste_scaled(frame, equation_card(), W / 2, 860, 0.9 + 0.1 * s3, a3)
     # button
     s4, a4 = pop(t, K["c4"], 0.5)
     if a4 > 0:
         pulse = 1 + 0.035 * max(0.0, math.sin((t - K["c4"] - 0.6) * 5)) if t > K["c4"] + 0.6 else 1
         btn = pill("เช็กความคุ้มครองของคุณวันนี้", NAVY, YELLOW, outline=WHITE, size=54, padx=56, pady=30, weight="Bold")
-        paste_scaled(frame, btn, W / 2, 1210, s4 * pulse, a4)
-        s5, a5 = pop(t, K["c4"] + 0.6)
-        paste_scaled(frame, text("ทักแชท เพื่อวางแผนให้ครบทั้งสองแบบ", "Medium", 44, WHITE, shadow=8), W / 2, 1330, s5, a5)
+        paste_scaled(frame, btn, W / 2, 1140, s4 * pulse, a4)
+        s5, a5 = pop(t, K["c4"] + 0.6, 0.5)
+        paste_scaled(frame, line_card(), W / 2, 1300, s5, a5)
+        s6, a6 = pop(t, K["c4"] + 1.1)
+        paste_scaled(frame, text("ทักแชท เพื่อวางแผนให้ครบทั้งสองแบบ", "Medium", 42, WHITE, shadow=8), W / 2, 1430, s6, a6)
     # disclaimer
     da = prog(t, K["c3"] + 0.1, K["c3"] + 0.7)
     if da > 0:
         d = text("ผู้ซื้อควรทำความเข้าใจรายละเอียดความคุ้มครอง เงื่อนไข และข้อยกเว้น\nก่อนตัดสินใจทำประกันภัยทุกครั้ง",
                  "Regular", 26, WHITE, spacing=0)
-        paste_scaled(frame, d, W / 2, 1460, 1.0, da * 0.85)
+        paste_scaled(frame, d, W / 2, 1520, 1.0, da * 0.85)
+
+
+CONTACT_LINE_ID = "pairie.b"
+LINE_GREEN = (6, 199, 85)
+
+
+@lru_cache(maxsize=1)
+def line_card():
+    """Contact card: chat badge + LINE ID (generic chat icon, no third-party logo)."""
+    small = text("แอดไลน์ปรึกษาได้เลย", "Medium", 32, GREY)
+    big = text(f"LINE ID: {CONTACT_LINE_ID}", "Bold", 56, NAVY)
+    badge = 112
+    w = badge + 40 + max(small.width, big.width) + 60
+    h = 150
+    sf, c = surface(w + 30, h + 30)
+    rrect(c, 15, 22, w, h, h / 2)
+    col(c, (0, 20, 70), 0.25)
+    c.fill()
+    rrect(c, 15, 15, w, h, h / 2)
+    col(c, WHITE)
+    c.fill_preserve()
+    col(c, LINE_GREEN)
+    c.set_line_width(5)
+    c.stroke()
+    cx, cy = 15 + 20 + badge / 2, 15 + h / 2
+    c.arc(cx, cy, badge / 2, 0, 2 * math.pi)
+    col(c, LINE_GREEN)
+    c.fill()
+    # speech bubble
+    col(c, WHITE)
+    rrect(c, cx - 32, cy - 24, 64, 42, 18)
+    c.fill()
+    c.move_to(cx - 14, cy + 14); c.line_to(cx - 22, cy + 30); c.line_to(cx + 2, cy + 16); c.close_path(); c.fill()
+    col(c, LINE_GREEN)
+    for dx in (-16, 0, 16):
+        c.arc(cx + dx, cy - 3, 4.5, 0, 2 * math.pi)
+        c.fill()
+    im = to_pil(sf)
+    tx = int(15 + 20 + badge + 30)
+    im.alpha_composite(small, dest=(tx, int(cy - 58)))
+    im.alpha_composite(big, dest=(tx, int(cy - 18)))
+    return im
 
 
 @lru_cache(maxsize=1)
@@ -786,7 +830,7 @@ def render_frame(t):
 def sfx_times():
     pops = ([K["h1"], K["h2"], K["h3"], K["hb"]] + [LEFT["card"], LEFT["chip"]] + LEFT["items"]
             + [RIGHT["card"], RIGHT["chip"]] + RIGHT["items"] + [T_BOTH, T_BOTH + 0.35] + [K["i1"], K["i2"]]
-            + [K["i2"] + 0.7 + i * 0.18 for i in range(6)] + [K["c1"], K["c2"], K["c3"]])
+            + [K["i2"] + 0.7 + i * 0.18 for i in range(6)] + [K["c1"], K["c2"], K["c3"], K["c4"] + 0.6])
     whoosh = [T_SPLIT - 0.3, T_INSIGHT - 0.35, T_CTA - 0.35]
     ding = [K["c4"]]
     return pops, whoosh, ding
