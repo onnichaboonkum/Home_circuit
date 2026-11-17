@@ -381,26 +381,176 @@ def column_card(header, accent, icon_name, height=1040, width=500):
     return im
 
 
-# ================================================================ timeline (seconds)
-T_HOOK = 0.0
-T_SPLIT = 4.0                 # header shrinks, cards appear
-LEFT = {"card": 4.4, "chip": 5.7, "items": [6.8, 7.8, 8.8, 9.9]}
-RIGHT = {"card": 12.2, "chip": 13.5, "items": [15.0, 16.2, 17.5, 18.9, 20.3]}
-T_BOTH = 22.4                 # both columns lit + "ต้องมีทั้งคู่"
-T_INSIGHT = 25.6
-T_CTA = 30.6
+# ================================================================ voice-over + timeline
+VOICE = "th-TH-PremwadeeNeural"
+VO_DIR = HERE / "audio" / "vo"
+# segment id, spoken text, caption chunks (each chunk: display text; timed from its first word)
+VO_SCRIPT = [
+    ("v0", "มีประกันสุขภาพแล้ว ทำไมยังต้องมีประกันโรคร้าย?", []),
+    ("v1", "ประกันสุขภาพมีไว้สำหรับ ค่ารักษา ค่าห้อง ค่าหมอ ค่ายา และรักษาพยาบาลตามเงื่อนไข",
+     ["ประกันสุขภาพมีไว้สำหรับ “ค่ารักษา”", "ค่าห้อง ค่าหมอ ค่ายา\nและรักษาพยาบาลตามเงื่อนไข"]),
+    ("v2", "ส่วนประกันโรคร้ายแรงมีไว้สำหรับค่าใช้จ่ายแฝง เช่น ค่าเดินทาง ค่าปรับปรุงบ้าน รถเข็นหรืออุปกรณ์ช่วยเหลือ "
+           "รายได้ที่หายไป และค่ารักษาบางส่วนที่อยู่นอกสิทธิ์",
+     ["ส่วนประกันโรคร้ายแรง\nมีไว้สำหรับ “ค่าใช้จ่ายแฝง”", "เช่น ค่าเดินทาง ค่าปรับปรุงบ้าน\nรถเข็นหรืออุปกรณ์ช่วยเหลือ",
+      "รายได้ที่หายไป และค่ารักษา\nบางส่วนที่อยู่นอกสิทธิ์"]),
+    ("v3", "เพราะเมื่อป่วยหนักหนึ่งครั้ง ค่าใช้จ่ายไม่ได้จบแค่ที่โรงพยาบาล", []),
+    ("v4", "อย่ารอให้ป่วยก่อน แล้วค่อยรู้ว่าไม่พอ มีทั้งประกันสุขภาพและประกันโรคร้าย ถึงจะคุ้มครองครบ "
+           "ทักแชทมาเช็กความคุ้มครองของคุณได้วันนี้", []),
+]
+# caption chunk -> the words that start it (looked up in the word timings)
+CHUNK_KEYS = {"v1": ["ประกันสุขภาพ", "ค่าห้อง"], "v2": ["ส่วน", "เช่น", "รายได้"]}
+
 LEFT_ITEMS = [("ค่าห้อง", "bed"), ("ค่าหมอ", "doctor"), ("ค่ายา", "pill"), ("รักษาพยาบาล\nตามเงื่อนไข", "clipboard")]
 RIGHT_ITEMS = [("ค่าเดินทาง", "car"), ("ค่าปรับปรุงบ้าน", "house"), ("รถเข็น /\nอุปกรณ์ช่วยเหลือ", "wheelchair"),
                ("รายได้ที่หายไป", "wallet"), ("ค่ารักษาบางส่วน\nที่อยู่นอกสิทธิ์", "receipt")]
+LEFT_KEYS = ("ค่ารักษา", ["ค่าห้อง", "ค่าหมอ", "ค่ายา", "รักษาพยาบาล"])
+RIGHT_KEYS = ("ค่าใช้จ่าย", ["ค่าเดินทาง", "ค่าปรับปรุง", "รถเข็น", "รายได้", "ค่ารักษา"])
 
-# narration lines (shown as captions; the timing is ready for a recorded voice-over)
-CAPTIONS = [
-    (4.6, 7.0, "ประกันสุขภาพมีไว้สำหรับ “ค่ารักษา”"),
-    (7.0, 11.6, "ค่าห้อง ค่าหมอ ค่ายา\nและรักษาพยาบาลตามเงื่อนไข"),
-    (12.3, 14.9, "ส่วนประกันโรคร้ายแรง\nมีไว้สำหรับ “ค่าใช้จ่ายแฝง”"),
-    (14.9, 18.8, "เช่น ค่าเดินทาง ค่าปรับปรุงบ้าน\nรถเข็นหรืออุปกรณ์ช่วยเหลือ"),
-    (18.8, 22.3, "รายได้ที่หายไป และค่ารักษา\nบางส่วนที่อยู่นอกสิทธิ์"),
-]
+VO_PLACED = []     # (id, start, duration)
+
+
+def vo_words(seg_id):
+    import json
+    f = VO_DIR / f"{seg_id}.json"
+    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else None
+
+
+def word_time(seg, key, after=0.0):
+    """Start time (s, segment-relative) of the first word at/after ``after`` whose text begins ``key``."""
+    words = seg["words"]
+    text_all = "".join(w["text"] for w in words)
+    pos = 0
+    spans = []
+    for w in words:
+        spans.append((pos, pos + len(w["text"]), w["start"]))
+        pos += len(w["text"])
+    k = key.replace(" ", "")
+    i = text_all.find(k)
+    while i >= 0:
+        for a, b, st in spans:
+            if a <= i < b and st >= after - 1e-6:
+                return st
+        i = text_all.find(k, i + 1)
+    return None
+
+
+def build_timeline():
+    """Lay the scenes out around the voice-over (falls back to fixed timings without VO files)."""
+    global T_SPLIT, LEFT, RIGHT, T_BOTH, T_INSIGHT, T_CTA, DURATION, CAPTIONS, K, VO_PLACED
+    segs = {sid: vo_words(sid) for sid, _, _ in VO_SCRIPT}
+    if not all(segs.values()):
+        T_SPLIT, T_BOTH, T_INSIGHT, T_CTA, DURATION = 4.0, 22.4, 25.6, 30.6, 40.0
+        LEFT = {"card": 4.4, "chip": 5.7, "items": [6.8, 7.8, 8.8, 9.9]}
+        RIGHT = {"card": 12.2, "chip": 13.5, "items": [15.0, 16.2, 17.5, 18.9, 20.3]}
+        K = {"h1": 0.25, "h2": 1.05, "h3": 1.6, "hb": 2.4, "i1": T_INSIGHT + 0.2, "i2": T_INSIGHT + 1.1,
+             "c1": T_CTA + 0.1, "c2": T_CTA + 0.7, "c3": T_CTA + 1.9, "c4": T_CTA + 3.4}
+        CAPTIONS = []
+        VO_PLACED = []
+        return
+    VO_PLACED = []
+
+    def place(sid, t0):
+        VO_PLACED.append((sid, t0, segs[sid]["duration"]))
+        return t0, t0 + segs[sid]["duration"]
+
+    def wt(sid, key, t0, after=0.0, default=0.0):
+        v = word_time(segs[sid], key, after)
+        return t0 + (v if v is not None else default)
+
+    K = {}
+    v0s, v0e = place("v0", 0.35)
+    K["h1"] = v0s
+    K["h2"] = wt("v0", "ทำไม", v0s, default=1.0)
+    K["h3"] = wt("v0", "ประกันโรค", v0s, after=1.0, default=1.6)
+    K["hb"] = v0e + 0.1
+    T_SPLIT = v0e + 0.9
+    v1s, v1e = place("v1", T_SPLIT + 0.45)
+    LEFT = {"card": v1s, "chip": wt("v1", LEFT_KEYS[0], v1s),
+            "items": [wt("v1", k, v1s) for k in LEFT_KEYS[1]]}
+    v2s, v2e = place("v2", v1e + 0.7)
+    RIGHT = {"card": v2s, "chip": wt("v2", RIGHT_KEYS[0], v2s)}
+    items, last = [], 1.0
+    for k in RIGHT_KEYS[1]:
+        v = word_time(segs["v2"], k, after=last)
+        last = v if v is not None else last
+        items.append(v2s + last)
+    RIGHT["items"] = items
+    T_BOTH = v2e + 0.3
+    T_INSIGHT = T_BOTH + 2.6
+    v3s, v3e = place("v3", T_INSIGHT + 0.3)
+    K["i1"] = v3s
+    K["i2"] = wt("v3", "ค่าใช้จ่าย", v3s, default=1.5)
+    T_CTA = max(v3e + 1.6, K["i2"] + 3.4)
+    v4s, v4e = place("v4", T_CTA + 0.2)
+    K["c1"] = v4s
+    K["c2"] = wt("v4", "แล้ว", v4s, default=1.2)
+    K["c3"] = wt("v4", "มีทั้ง", v4s, default=2.5)
+    K["c4"] = wt("v4", "ทักแชท", v4s, default=5.0)
+    DURATION = round((v4e + 2.4) * FPS) / FPS
+    # captions from word timings
+    CAPTIONS = []
+    for sid, _, chunks in VO_SCRIPT:
+        if not chunks:
+            continue
+        t0 = next(t for i_, t, _d in VO_PLACED if i_ == sid)
+        starts, last = [], 0.0
+        for k in CHUNK_KEYS[sid]:
+            v = word_time(segs[sid], k, after=last)
+            last = v if v is not None else last
+            starts.append(t0 + last)
+        end_ = t0 + segs[sid]["duration"] + 0.35
+        for j, ch in enumerate(chunks):
+            CAPTIONS.append((starts[j], starts[j + 1] if j + 1 < len(chunks) else end_, ch))
+
+
+async def _tts(text_, out_mp3):
+    import edge_tts
+    import edge_tts.communicate as ec
+    import ssl
+    ec._SSL_CTX = ssl.create_default_context(cafile=os.environ.get("SSL_CERT_FILE", "/root/.ccr/ca-bundle.crt"))
+    comm = edge_tts.Communicate(text_, VOICE, rate="+4%", boundary="WordBoundary",
+                                proxy=os.environ.get("HTTPS_PROXY"))
+    words = []
+    with open(out_mp3, "wb") as f:
+        async for chunk in comm.stream():
+            if chunk["type"] == "audio":
+                f.write(chunk["data"])
+            elif chunk["type"] == "WordBoundary":
+                words.append({"text": chunk["text"], "start": chunk["offset"] / 1e7, "dur": chunk["duration"] / 1e7})
+    return words
+
+
+def generate_vo(force=False):
+    """Thai neural voice-over (Microsoft Edge TTS, voice th-TH-Premwadee). Cached in audio/vo/."""
+    import asyncio
+    import json
+    VO_DIR.mkdir(parents=True, exist_ok=True)
+    for sid, text_, _ in VO_SCRIPT:
+        j, mp3, wav = VO_DIR / f"{sid}.json", VO_DIR / f"{sid}.mp3", VO_DIR / f"{sid}.wav"
+        if j.exists() and wav.exists() and not force:
+            continue
+        import time
+        for attempt in range(20):        # the free endpoint drops requests intermittently
+            try:
+                words = asyncio.run(_tts(text_, mp3))
+                break
+            except Exception as e:  # noqa: BLE001
+                print(f"  vo {sid}: retry {attempt + 1} ({type(e).__name__})")
+                time.sleep(6)
+        else:
+            raise RuntimeError(f"voice generation failed for {sid}")
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp3), "-ac", "1", "-ar", str(dsp.SR),
+                        "-af", "silenceremove=stop_periods=-1:stop_duration=0.3:stop_threshold=-50dB", str(wav)],
+                       check=True)
+        dur = len(dsp.read_wav(wav)) / dsp.SR
+        j.write_text(json.dumps({"text": text_, "voice": VOICE, "duration": dur, "words": words},
+                                ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"  vo {sid}: {dur:.2f}s  {len(words)} words")
+
+
+K = {}
+CAPTIONS = []
+build_timeline()
 
 COL_W = 500
 LX, RX = 30, W - 30 - COL_W
@@ -423,26 +573,26 @@ def draw_header(frame, t):
     m = ease_in_out(prog(t, T_SPLIT - 0.3, T_SPLIT + 0.4))   # 0 = big hook, 1 = header
     a_all = 1 - out
     # line 1
-    s1, a1 = pop(t, 0.25)
+    s1, a1 = pop(t, K["h1"])
     l1 = text("มีประกันสุขภาพแล้ว…", "SemiBold", 76, WHITE, shadow=10)
     y1 = 640 + (170 - 640) * m
     sc1 = s1 * (1 - 0.42 * m)
     paste_scaled(frame, l1, W / 2, y1, sc1, a1 * a_all)
     # line 2
-    s2, a2 = pop(t, 1.05)
+    s2, a2 = pop(t, K["h2"])
     l2 = text("ทำไมยังต้องมี", "Bold", 92, WHITE, shadow=10)
     y2 = 790 + (242 - 790) * m
     x2 = W / 2 + (-170) * m
     paste_scaled(frame, l2, x2, y2, s2 * (1 - 0.5 * m), a2 * a_all)
     # "ประกันโรคร้าย?" pink, pulsing
-    s3, a3 = pop(t, 1.6, 0.5)
+    s3, a3 = pop(t, K["h3"], 0.5)
     pulse = 1 + 0.03 * math.sin(t * 6) * (1 - m)
     l3 = text("ประกันโรคร้าย?", "ExtraBold", 138, PINK, stroke=7, stroke_fill=WHITE, shadow=12)
     y3 = 960 + (242 - 960) * m
     x3 = W / 2 + 165 * m
     paste_scaled(frame, l3, x3, y3, s3 * pulse * (1 - 0.62 * m), a3 * a_all)
     # yellow badge (hook only)
-    sb, ab = pop(t, 2.4)
+    sb, ab = pop(t, K["hb"])
     if m < 1:
         badge = pill("คลิปนี้มีคำตอบ!", NAVY, YELLOW, size=46, padx=40, pady=18, weight="Bold")
         paste_scaled(frame, badge, W / 2 + 230, 1150, sb, ab * (1 - m) * a_all, rot=6)
@@ -524,22 +674,22 @@ def draw_insight(frame, t):
         return
     out = ease_in_out(prog(t, T_CTA - 0.35, T_CTA + 0.2))
     a_all = 1 - out
-    s1, a1 = pop(t, T_INSIGHT + 0.2)
+    s1, a1 = pop(t, K["i1"])
     paste_scaled(frame, text("ป่วยหนักหนึ่งครั้ง…", "SemiBold", 80, WHITE, shadow=10), W / 2, 640, s1, a1 * a_all)
-    s2, a2 = pop(t, T_INSIGHT + 1.1, 0.5)
+    s2, a2 = pop(t, K["i2"], 0.5)
     paste_scaled(frame, text("ค่าใช้จ่ายไม่ได้จบ\nแค่ที่โรงพยาบาล", "ExtraBold", 104, YELLOW, stroke=6,
                              stroke_fill=NAVY, shadow=12, spacing=-10), W / 2, 860, s2, a2 * a_all)
     # floating cost icons
     names = ["car", "house", "wheelchair", "wallet", "receipt", "pill"]
     for i, n in enumerate(names):
-        si, ai = pop(t, T_INSIGHT + 1.8 + i * 0.18)
+        si, ai = pop(t, K["i2"] + 0.7 + i * 0.18)
         ang = -math.pi * 0.9 + i * (math.pi * 0.8 / (len(names) - 1))
         r = 380
         x = W / 2 + math.cos(ang + math.pi) * r * -1
         y = 1230 + math.sin(t * 2 + i) * 10
         x = 160 + i * 152
         paste_scaled(frame, icon_badge(n, PINK if i % 2 else BLUE, 110), x, y, si, ai * a_all)
-    s3, a3 = pop(t, T_INSIGHT + 2.9)
+    s3, a3 = pop(t, K["i2"] + 1.8)
     paste_scaled(frame, text("ประกันสุขภาพจ่าย “ค่ารักษา”\nประกันโรคร้ายช่วยดูแล “ชีวิตที่ต้องไปต่อ”",
                              "Medium", 46, WHITE, shadow=8, spacing=0), W / 2, 1420, s3, a3 * a_all)
 
@@ -547,25 +697,25 @@ def draw_insight(frame, t):
 def draw_cta(frame, t):
     if t < T_CTA:
         return
-    s1, a1 = pop(t, T_CTA + 0.1)
+    s1, a1 = pop(t, K["c1"])
     paste_scaled(frame, text("อย่ารอให้ป่วยก่อน", "Bold", 92, WHITE, shadow=10), W / 2, 430, s1, a1)
-    s2, a2 = pop(t, T_CTA + 0.7, 0.5)
+    s2, a2 = pop(t, K["c2"], 0.5)
     paste_scaled(frame, text("แล้วค่อยรู้ว่า “ไม่พอ”", "ExtraBold", 112, PINK, stroke=7, stroke_fill=WHITE, shadow=12),
                  W / 2, 580, s2, a2)
     # equation card
-    s3, a3 = pop(t, T_CTA + 1.9, 0.5)
+    s3, a3 = pop(t, K["c3"], 0.5)
     if a3 > 0:
         paste_scaled(frame, equation_card(), W / 2, 900, 0.9 + 0.1 * s3, a3)
     # button
-    s4, a4 = pop(t, T_CTA + 3.4, 0.5)
+    s4, a4 = pop(t, K["c4"], 0.5)
     if a4 > 0:
-        pulse = 1 + 0.035 * max(0.0, math.sin((t - T_CTA - 4.0) * 5)) if t > T_CTA + 4.0 else 1
+        pulse = 1 + 0.035 * max(0.0, math.sin((t - K["c4"] - 0.6) * 5)) if t > K["c4"] + 0.6 else 1
         btn = pill("เช็กความคุ้มครองของคุณวันนี้", NAVY, YELLOW, outline=WHITE, size=54, padx=56, pady=30, weight="Bold")
         paste_scaled(frame, btn, W / 2, 1210, s4 * pulse, a4)
-        s5, a5 = pop(t, T_CTA + 4.0)
+        s5, a5 = pop(t, K["c4"] + 0.6)
         paste_scaled(frame, text("ทักแชท เพื่อวางแผนให้ครบทั้งสองแบบ", "Medium", 44, WHITE, shadow=8), W / 2, 1330, s5, a5)
     # disclaimer
-    da = prog(t, T_CTA + 2.0, T_CTA + 2.6)
+    da = prog(t, K["c3"] + 0.1, K["c3"] + 0.7)
     if da > 0:
         d = text("ผู้ซื้อควรทำความเข้าใจรายละเอียดความคุ้มครอง เงื่อนไข และข้อยกเว้น\nก่อนตัดสินใจทำประกันภัยทุกครั้ง",
                  "Regular", 26, WHITE, spacing=0)
@@ -633,11 +783,13 @@ def render_frame(t):
 
 
 # ================================================================ audio
-POPS = ([0.25, 1.05, 1.6, 2.4] + [LEFT["card"], LEFT["chip"]] + LEFT["items"] + [RIGHT["card"], RIGHT["chip"]]
-        + RIGHT["items"] + [T_BOTH, T_BOTH + 0.35] + [T_INSIGHT + 0.2, T_INSIGHT + 1.1]
-        + [T_INSIGHT + 1.8 + i * 0.18 for i in range(6)] + [T_CTA + 0.1, T_CTA + 0.7, T_CTA + 1.9])
-WHOOSH = [T_SPLIT - 0.3, T_INSIGHT - 0.35, T_CTA - 0.35]
-DING = [T_CTA + 3.4]
+def sfx_times():
+    pops = ([K["h1"], K["h2"], K["h3"], K["hb"]] + [LEFT["card"], LEFT["chip"]] + LEFT["items"]
+            + [RIGHT["card"], RIGHT["chip"]] + RIGHT["items"] + [T_BOTH, T_BOTH + 0.35] + [K["i1"], K["i2"]]
+            + [K["i2"] + 0.7 + i * 0.18 for i in range(6)] + [K["c1"], K["c2"], K["c3"]])
+    whoosh = [T_SPLIT - 0.3, T_INSIGHT - 0.35, T_CTA - 0.35]
+    ding = [K["c4"]]
+    return pops, whoosh, ding
 
 
 def sfx_pop(pitch=1.0):
@@ -747,6 +899,22 @@ def build_audio(path):
         if k > 0:
             fx[i:i + k] += c[:k] * g
 
+    # voice-over track + ducking envelope for the music
+    vo = np.zeros(len(m))
+    active = np.zeros(len(m))
+    for sid, t0, dur in VO_PLACED:
+        x = dsp.read_wav(VO_DIR / f"{sid}.wav")[:, 0]
+        x = dsp.hp(x, 80) / (np.abs(x).max() + 1e-9) * 0.9
+        i = int(t0 * dsp.SR)
+        k = min(len(x), len(vo) - i)
+        vo[i:i + k] += x[:k]
+        active[max(0, i - int(0.15 * dsp.SR)):i + k + int(0.25 * dsp.SR)] = 1
+    if VO_PLACED:
+        ker = np.hanning(int(0.3 * dsp.SR))
+        env = np.convolve(active, ker / ker.sum(), mode="same")
+        m = m * (1 - 0.62 * env)[:, None]
+        fx += np.stack([vo, vo], -1) * 1.0
+    POPS, WHOOSH, DING = sfx_times()
     for i, t in enumerate(POPS):
         place(sfx_pop(1.0 + (i % 5) * 0.06), t, 0.45)
     for t in WHOOSH:
@@ -786,8 +954,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--still", default="")
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
+    ap.add_argument("--no-vo", action="store_true", help="skip voice generation (uses cached VO if present)")
+    ap.add_argument("--force-vo", action="store_true", help="regenerate the voice-over")
     a = ap.parse_args()
     BUILD.mkdir(parents=True, exist_ok=True)
+    if not a.no_vo:
+        generate_vo(force=a.force_vo)
+    build_timeline()
+    print(f"timeline: {DURATION:.2f}s  split {T_SPLIT:.2f}  both {T_BOTH:.2f}  insight {T_INSIGHT:.2f}  cta {T_CTA:.2f}")
     if a.still:
         for s in a.still.split(","):
             render_frame(float(s)).save(BUILD / f"still_{float(s):05.1f}.png")
