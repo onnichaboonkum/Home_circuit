@@ -1,6 +1,6 @@
 # Reel: มีประกันสุขภาพแล้ว… ทำไมยังต้องมีประกันโรคร้าย?
 
-9:16 (1080×1920, 30 fps, H.264 + AAC, about 39 s) for Facebook / Instagram Reels and TikTok.
+9:16 (1080×1920, 30 fps, H.264 + AAC, about 46 s) for Facebook / Instagram Reels and TikTok.
 
 Output: `output/health_vs_critical_illness_reel_9x16.mp4` (+ `.th.srt` captions)
 
@@ -22,3 +22,10 @@ The script text is `VO_SCRIPT`. Regenerate it with `--force-vo`, or use the cach
 
 To use a human or licensed voice, replace `audio/vo/vN.wav` with your recordings and run with `--no-vo`.
 Keep the `.json` word timings, or delete them to fall back to fixed timings.
+
+### Current voice: uploaded AI voice (Sofia)
+
+The voice in the current render is the client's AI voice file (`audio/vo/source_voice.mp3`), imported with
+`python3 insurance_reel/import_vo.py <file.mp3>`. The script cuts it into v0–v4 at the pauses listed in `PHRASES`
+(measured with ffmpeg `silencedetect`). It then spreads approximate timings across each phrase so the pop-ups follow the voice.
+For a new take, re-measure the pauses, update `PHRASES`, re-run the import, then run `python3 insurance_reel/reel.py --no-vo`.
